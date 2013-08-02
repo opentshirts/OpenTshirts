@@ -382,7 +382,7 @@ when JavaScript is disabled.
 </div>
 <?php if($video_tutorial_embed) { ?>
 	<div id="popup_video" style="display:none;">
-		<?php echo html_entity_decode($video_tutorial_embed); ?>
+		<div id="html_video_container"><?php echo html_entity_decode($video_tutorial_embed); ?></div>
 	</div>
 	<div id="popup_video_link" class="ui-widget-content ui-corner-all" style="position:absolute; z-index:1000; bottom:10px; left:10px; display:none; padding:5px;">
 		<a onclick="$( '#popup_video' ).dialog('open');" style="cursor:pointer">Design Studio Tutorial</a>
@@ -395,10 +395,14 @@ when JavaScript is disabled.
 				width: "auto",
 				modal: true,
 				close: function(event, ui) {
+					$("#html_video_container").html('');
 					$("#popup_video_link").show();
+
 				},
 				open: function(event, ui) {
+					$("#html_video_container").html('<?php echo html_entity_decode($video_tutorial_embed); ?>');
 					$("#popup_video_link").hide();
+					$( "#popup_video" ).dialog( "option", "position", 'center' );	
 				}
 		
 			});
