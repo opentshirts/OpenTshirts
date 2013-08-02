@@ -1,0 +1,54 @@
+V1.2.0
+
+07-26-2013 - Fixed whitespace issue in upgrade.sql
+07-25-2013 - Added fix for removed themes
+07-22-2013 - Added busines center page
+07-20-2013 - Added auto-select printing method based on amount of products
+07-10-2013 - Added product color palette to studio
+07-10-2013 - Added remove button on handlers
+07-08-2013 - Fixed error adding to cart no printable products
+07-05-2013 - Added underfill image for product
+07-04-2013 - Changed style for error msgs
+07-03-2013 - Added scroll to product colors list
+07-03-2013 - Fixed issue creating new printable products
+07-02-2013 - Added Transfers printing method
+07-02-2013 - Fixed issue with DTG pricing
+07-02-2013 - Moved no translated text on flex to PHP language file
+07-02-2013 - Fixed issue with colors when only one printing method is enabled
+07-01-2013 - Fixed issue with SSL enabled
+07-01-2013 - Fixed product preview refresh time
+07-01-2013 - Added about page.
+07-01-2013 - Fixed issue with font in font list
+07-01-2013 - Added link to select printing method on error
+06-29-2013 - Fixed isseu with text arching
+06-28-2013 - Removed top menu from admin->extensions->opentshits->edit
+06-28-2013 - Added prices and sizes to product detail. added studio link to category and search product list
+06-18-2013 - Added option for temporary disable printable products
+06-16-2013 - Fixed languages flags on studio page
+06-15-2013 - Added colors filter for each printing method
+06-11-2013 - Fixed text overflow on flex product panel
+06-10-2013 - Implemented printing methods as modules
+06-05-2013 - Move Studio vars to store on session
+05-28-2013 - Added Screen charges for screenprinting
+05-25-2013 - Product model updated for OC 1.5.5.1 (catalog/model/opentshirts/product.php)
+05-20-2013 - Fixed issue when saving design without add to cart, then change quantities and add to cart with  price_id_composition empty
+04-15-2013 - Fixed issue changing theme with custom template
+04-11-2013 - Compatibility issues with OC 1.5.5.1 fixed
+03-22-2013 - new quote interface
+03-20-2013 - new flex skin
+03-15-2013 - add custom area shape and thumb preview
+03-09-2013 - added options for duplicate, undo, redo, select all, and clear selection on studio
+03-04-2013 - fixed issue with bitmap categories
+03-02-2013 - changed msg for saved design while logged as admin to avoid misunderstanding
+03-02-2013 - added upgrade feature
+02-26-2013 - added sort field to design colors
+02-25-2013 - register pop up for small screen issue fixed
+02-24-2013 - fixed error on delivery date module for empty holidays
+02-22-2013 - Included Product export mod and delivery date mod
+02-16-2013 - Optimized swf files
+02-14-2013 - Fixed product colors order was random instead of based on flat_color_index
+02-11-2013 - Fixed used colors and hidden colors were omitted during save/load.
+02-10-2013 - Fixed Error on mydesigns.tpl. Added SSL link to my designs
+02-09-2013 - Added exportimage.php file to export design as PNG file
+02-07-2013 - Added link to "Your Designs" on My Account
+02-06-2013 - Product sorted by name on floating window

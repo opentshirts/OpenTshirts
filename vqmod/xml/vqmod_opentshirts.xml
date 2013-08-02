@@ -1,0 +1,491 @@
+<modification>
+	<id>OPENTSHIRTS</id>
+	<version>1.0</version>
+	<vqmver>2.3.2</vqmver>
+	<author>joseandriani</author>	
+	<file name="system/library/pagination.php">
+		<operation>
+			<search position="before"><![CDATA[public function render() {]]></search>
+			<add><![CDATA[
+			public function getLimit() {
+				return $this->limit;
+			}
+			public function getTotal() {
+				return $this->total;
+			}
+			public function getStart() {
+				return ($this->page*$this->limit)-$this->limit;
+			}
+			public function getEnd() {
+				return ($this->page*$this->limit);
+			}
+			]]></add>
+		</operation>
+	</file>
+	<file name="system/library/session.php">
+		<operation>
+			<search position="before"><![CDATA[session_start();]]></search>
+			<add><![CDATA[
+			if(isset($_REQUEST['session_id']))
+			{
+				session_id($_REQUEST['session_id']);
+			}
+			]]></add>
+		</operation>
+	</file>	 
+	<file name="system/library/cart.php">
+		<operation>
+			<search position="after"><![CDATA[$product_id = $product[0];]]></search>
+			<add><![CDATA[
+				if(!is_numeric($product_id)) {
+					continue;
+				}
+
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[public function update($key, $qty) {]]></search>
+			<add><![CDATA[
+
+  	public function addPrintable($id_composition, $qty = 1, $option = array()) {
+
+    	if (!$option) {
+      		$key = $id_composition;
+    	} else {
+      		$key = $id_composition . ':' . base64_encode(serialize($option));
+    	}
+    	
+		if ((int)$qty && ((int)$qty > 0)) {
+    		if (!isset($this->session->data['cart'][$key])) {
+      			$this->session->data['cart'][$key] = (int)$qty;
+    		} else {
+      			$this->session->data['cart'][$key] += (int)$qty;
+    		}
+		}
+		
+		$this->data = array();
+  	}
+
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before" index="1" offset="1"><![CDATA[return $this->data;]]></search>
+			<add><![CDATA[
+
+		/* -------- CUSTOM CART --------- */
+
+		foreach ($this->session->data['cart'] as $key => $quantity) {
+			
+
+			$composition = explode(':', $key);
+			$id_composition = $composition[0];
+
+			if(is_numeric($id_composition)) {
+				continue;
+			}
+
+			$stock = true;
+		
+			// Options
+			if (isset($composition[1])) {
+				$options = unserialize(base64_decode($composition[1]));
+			} else {
+				//echo("options for printable product not defined: ");
+			} 
+			
+			$composition_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "composition c LEFT JOIN " . DB_PREFIX . "design d ON (c.id_composition = d.id_composition) WHERE c.id_composition = '" . $id_composition . "' AND c.deleted = '0' AND c.editable = '1' ");
+
+			if ($composition_query->num_rows) {
+				$product_id = $composition_query->row['product_id'];
+
+				$flag_remove = false;
+
+				$product_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.date_available <= NOW() AND p.status = '1'");
+				if(!$product_query->num_rows) {
+					$this->remove($key);
+				}
+				$option_price = 0;
+				$option_points = 0;
+				$option_weight = 0;
+		
+				$option_data = array();
+
+				// Product Discounts
+				$amount_products = 0;
+				
+				foreach ($this->session->data['cart'] as $key_2 => $quantity_2) {
+					$product_2 = explode(':', $key_2);
+					
+					if ($product_2[0] == $id_composition) {
+						$amount_products += $quantity_2;
+					}
+				}
+
+				$color_groups_prices = array();
+				$query_quantity_index = $this->db->query("SELECT quantity_index FROM " . DB_PREFIX . "printable_product_quantity WHERE product_id='" . (int)$product_id . "' AND quantity <= " . (int)$amount_products . " ORDER BY quantity DESC LIMIT 1 ");
+				if($query_quantity_index->num_rows==0) {
+					$flag_remove = true;
+				} else {
+					$quantity_index = $query_quantity_index->row["quantity_index"]; //column to take prices from
+					$query_price = $this->db->query("SELECT price, id_product_color_group FROM " . DB_PREFIX . "printable_product_quantity_price WHERE product_id='" . (int)$product_id . "' AND quantity_index='" . (int)$quantity_index . "' ");
+					if($query_price->num_rows==0) {
+						$flag_remove = true;
+					} else {
+						foreach ($query_price->rows as $result) {
+							$color_groups_prices[$result['id_product_color_group']] = $result["price"];
+						}
+					}
+				}
+
+				$product_color_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "printable_product_color WHERE id_product_color = '" . $options['id_product_color']. "' AND deleted = '0'");
+				if(!$product_color_query->num_rows) {
+					$flag_remove = true;
+				}
+				$product_color_data = $product_color_query->row;
+
+				///product color
+				if(isset($color_groups_prices[$product_color_data['id_product_color_group']])) {
+		    		$option_price += $color_groups_prices[$product_color_data['id_product_color_group']];
+		    	}
+
+				$option_data[] = array(
+					'product_option_id'       => '',
+					'product_option_value_id' => '',
+					'option_id'               => '',
+					'option_value_id'         => '',
+					'name'                    => 'Product Color',
+					'option_value'            => $product_color_data['name'],
+					'type'                    => '',
+					'quantity'                => '',
+					'subtract'                => '',
+					'price'                   => '0',
+					'price_prefix'            => '+',
+					'points'                  => '0',
+					'points_prefix'           => '+',								
+					'weight'                  => '0',
+					'weight_prefix'           => '+'
+				);
+
+				$product_size_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "printable_product_size WHERE id_product_size = '" . $options['id_product_size']. "' AND deleted = '0'");
+				if(!$product_size_query->num_rows) {
+					$flag_remove = true;
+				}
+				$product_size_data = $product_size_query->row;
+
+				$query = $this->db->query("SELECT id_product_size, upcharge FROM " . DB_PREFIX . "printable_product_size_upcharge WHERE product_id = '" . (int)$product_id . "' ");
+				$upcharge = array();
+				foreach ($query->rows as $result) {
+					$upcharge[$result["id_product_size"]] = $result["upcharge"];
+		    	}
+		    	if(isset($upcharge[$options['id_product_size']])) {
+		    		$option_price += $upcharge[$options['id_product_size']];
+		    	}
+
+				///product size
+				$option_data[] = array(
+					'product_option_id'       => '',
+					'product_option_value_id' => '',
+					'option_id'               => '',
+					'option_value_id'         => '',
+					'name'                    => 'Product Size',
+					'option_value'            => $product_size_data['description'],
+					'type'                    => '',
+					'quantity'                => '',
+					'subtract'                => '',
+					'price'                   => (isset($upcharge[$options['id_product_size']]))?$upcharge[$options['id_product_size']]:'0',
+					'price_prefix'            => '+',
+					'points'                  => '0',
+					'points_prefix'           => '+',								
+					'weight'                  => '0',
+					'weight_prefix'           => '+'
+				);
+
+
+				///get printing price
+				require_once(DIR_SYSTEM . 'library/' . $options['printing_method'] . "_cart.php");
+
+				$class = preg_replace('/[^a-zA-Z0-9]/', '', $options['printing_method']) . 'Cart';
+
+				$controller = new $class($this->config, $this->session, $this->db, $this->data);
+
+				$printing_data = $controller->getPrintData($key);
+				
+				if($printing_data['flag_remove']) {
+					$flag_remove = true;
+				} else {
+					$option_price += $printing_data['option_price'];
+					$option_data = array_merge($option_data, $printing_data['option_data']);
+				}			
+
+
+				if ($this->customer->isLogged()) {
+					$customer_group_id = $this->customer->getCustomerGroupId();
+				} else {
+					$customer_group_id = $this->config->get('config_customer_group_id');
+				}
+				
+				$price = 0;
+		
+				// Reward Points
+				$product_reward_query = $this->db->query("SELECT points FROM " . DB_PREFIX . "product_reward WHERE product_id = '" . (int)$product_id . "' AND customer_group_id = '" . (int)$customer_group_id . "'");
+				
+				if ($product_reward_query->num_rows) {	
+					$reward = $product_reward_query->row['points'];
+				} else {
+					$reward = 0;
+				}
+				
+				// Downloads		
+				$download_data = array();     		
+				
+				/*$download_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_download p2d LEFT JOIN " . DB_PREFIX . "download d ON (p2d.download_id = d.download_id) LEFT JOIN " . DB_PREFIX . "download_description dd ON (d.download_id = dd.download_id) WHERE p2d.product_id = '" . (int)$product_id . "' AND dd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+			
+				foreach ($download_query->rows as $download) {
+					$download_data[] = array(
+						'download_id' => $download['download_id'],
+						'name'        => $download['name'],
+						'filename'    => $download['filename'],
+						'mask'        => $download['mask'],
+						'remaining'   => $download['remaining']
+					);
+				}*/
+				
+				// Stock
+				/*if (!$product_query->row['quantity'] || ($product_query->row['quantity'] < $quantity)) {
+					$stock = false;
+				}*/
+
+				if ($flag_remove === true) {
+					$this->remove($key);
+				} else {
+					$this->data[$key] = array(
+						'key'             => $key,
+						'id_composition'  => $composition_query->row['id_composition'] ,
+						'product_id'      => $product_query->row['product_id'],
+						'name'            => $composition_query->row['name'] . ' on ' . $product_query->row['name'],
+						'model'           => $product_query->row['model'],
+						'shipping'        => $product_query->row['shipping'],
+						'image'           => 'data/designs/design_' . $composition_query->rows[0]['id_design'] . '/design_image.png',
+						'option'          => $option_data,
+						'download'        => $download_data,
+						'quantity'        => $quantity,
+						'minimum'         => $product_query->row['minimum'],
+						'subtract'        => $product_query->row['subtract'],
+						'stock'           => $stock,
+						'price'           => ($price + $option_price),
+						'total'           => ($price + $option_price) * $quantity,
+						'reward'          => $reward * $quantity,
+						'points'          => ($product_query->row['points'] ? ($product_query->row['points'] + $option_points) * $quantity : 0),
+						'tax_class_id'    => $product_query->row['tax_class_id'],
+						'weight'          => ($product_query->row['weight'] + $option_weight) * $quantity,
+						'weight_class_id' => $product_query->row['weight_class_id'],
+						'length'          => $product_query->row['length'],
+						'width'           => $product_query->row['width'],
+						'height'          => $product_query->row['height'],
+						'length_class_id' => $product_query->row['length_class_id']					
+					);
+				}
+			} else {
+				$this->remove($key);
+			}
+		}
+
+		/* -------- END CUSTOM CART --------- */
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after" offset="4"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/product/product.tpl')) {]]></search>
+			<add><![CDATA[
+
+			$this->load->model('opentshirts/product');
+			$is_printable = $this->model_opentshirts_product->isPrintable($this->request->get['product_id']);
+			if($is_printable) {
+				$this->load->language('opentshirts/product');
+
+				$this->load->model('opentshirts/price_product');
+				$this->load->model('opentshirts/product_color');
+				$this->data['price_matrix'] = $this->model_opentshirts_price_product->getPrice($this->request->get['product_id']);
+				$this->data['quantities'] = $this->model_opentshirts_price_product->getQuantities($this->request->get['product_id']);
+				$this->data['color_groups'] = $this->model_opentshirts_product_color->getColorGroups();
+
+				$this->data['text_price'] = $this->language->get('text_price');
+				$this->data['text_quantities'] = $this->language->get('text_quantities');
+
+				foreach($this->data['price_matrix'] as &$price_array) {
+					foreach($price_array as &$price_value) {
+						$price_value = $this->currency->format($price_value);
+					}
+					unset($price_value);
+				}
+				unset($price_array);				
+
+				$this->data['link_customize'] = $this->url->link('studio/home', 'product_id=' . $this->request->get['product_id']);
+				
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/opentshirts/product.tpl')) {
+					$this->template = $this->config->get('config_template') . '/template/opentshirts/product.tpl';
+				} else {
+					$this->template = 'default/template/opentshirts/product.tpl';
+				}
+			}
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/checkout/confirm.php">
+		<operation>
+			<search position="after"><![CDATA[$this->session->data['order_id'] = $this->model_checkout_order->addOrder($data);]]></search>
+			<add><![CDATA[
+			
+			$this->load->model('opentshirts/composition_order');
+			
+			foreach ($this->cart->getProducts() as $product) {
+				if(isset($product['id_composition'])) {
+					$this->model_opentshirts_composition_order->addCompositionToOrder($this->session->data['order_id'], $product['id_composition']);
+				}
+			}
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/model/checkout/order.php">
+		<operation>
+			<search position="after"><![CDATA[$this->cache->delete('product');]]></search>
+			<add><![CDATA[
+			
+			
+			$this->load->model('opentshirts/composition_order');
+			$this->load->model('opentshirts/composition');
+
+			$compositions = $this->model_opentshirts_composition_order->getOrderCompositions($order_id);
+
+			if($compositions) {
+				foreach ($compositions as $value) {
+					if(isset($value['id_composition'])) {
+						$this->model_opentshirts_composition->setToNoEditableComposition($value['id_composition']);
+					}
+				}
+			}
+			
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="admin/controller/sale/order.php">
+		<operation>
+			<search position="after"><![CDATA[$this->data['tab_fraud'] = $this->language->get('tab_fraud');]]></search>
+			<add><![CDATA[
+				
+			$this->load->language('opentshirts/order');
+			$this->data['tab_artwork'] = $this->language->get('tab_artwork');
+
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after" index="3"><![CDATA['common/header',]]></search>
+			<add><![CDATA[
+				
+			'opentshirts/order/artwork',
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="admin/view/template/sale/order_info.tpl">
+		<operation>
+			<search position="before" offset="1"><![CDATA[<div id="tab-order" class="vtabs-content">]]></search>
+			<add><![CDATA[
+				
+			<a href="#tab-artwork"><?php echo $tab_artwork; ?></a>
+
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before" offset="4"><![CDATA[$('#invoice-generate').live('click', function() {]]></search>
+			<add><![CDATA[
+				
+			<div id="tab-artwork" class="vtabs-content">
+				<?php echo $artwork; ?>
+			</div>
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="admin/view/template/common/header.tpl">
+		<operation>
+			<search position="after"><![CDATA[<li><a href="<?php echo $feed; ?>"><?php echo $text_feed; ?></a></li>]]></search>
+			<add><![CDATA[
+
+					<li><a class="parent">OpenTshirts</a>
+					    <ul>
+					      <li><a class="parent">Products</a>
+					        <ul>
+					          <li><a href="<?php echo $ot_product; ?>">Products</a></li>
+					          <li><a href="<?php echo $ot_product_color; ?>">Product Colors</a></li>
+					          <li><a href="<?php echo $ot_product_size; ?>">Product Sizes</a></li>
+					        </ul>
+					      </li>
+					      <li><a class="parent">Cliparts</a>
+					        <ul>
+					          <li><a href="<?php echo $ot_clipart; ?>">Cliparts</a></li>
+					          <li><a href="<?php echo $ot_clipart_category; ?>">Categories</a></li>
+					        </ul>
+					      </li>
+					      <li><a class="parent">Bitmaps</a>
+					        <ul>
+					          <li><a href="<?php echo $ot_bitmap; ?>">Bitmaps</a></li>
+					          <li><a href="<?php echo $ot_bitmap_category; ?>">Categories</a></li>
+					        </ul>
+					      </li>
+					      <li><a class="parent">Fonts</a>
+					        <ul>
+					          <li><a href="<?php echo $ot_font; ?>">Fonts</a></li>
+					          <li><a href="<?php echo $ot_font_category; ?>">Categories</a></li>
+					        </ul>
+					      </li>
+					      <li><a class="parent">Design Ideas</a>
+					        <ul>
+					          <li><a href="<?php echo $ot_composition; ?>">Design Ideas</a></li>
+					          <li><a href="<?php echo $ot_composition_category; ?>">Categories</a></li>
+					        </ul>
+					      </li>
+					      <li><a href="<?php echo $ot_printing_method; ?>">Printing Method</a></li>
+					      <li><a href="<?php echo $ot_design_color; ?>">Design Colors</a></li>
+					      <li><a href="<?php echo $ot_installer; ?>">Install Packs</a></li>
+					      <li><a href="<?php echo $ot_business_center; ?>">Business Center</a></li>
+					      <li><a href="<?php echo $ot_about; ?>">About</a></li>
+					    </ul>
+					</li>
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="admin/controller/common/header.php">
+		<operation>
+			<search position="after"><![CDATA[$this->data['feed'] = $this->url->link('extension/feed', 'token=' . $this->session->data['token'], 'SSL');]]></search>
+			<add><![CDATA[
+			
+			$this->data['ot_bitmap'] = $this->url->link('bitmap/bitmap', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_bitmap_category'] = $this->url->link('bitmap/category', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_clipart'] = $this->url->link('clipart/clipart', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_clipart_category'] = $this->url->link('clipart/category', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_composition'] = $this->url->link('opentshirts/composition', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_composition_category'] = $this->url->link('opentshirts/composition_category', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_design_color'] = $this->url->link('design_color/design_color', 'token=' . $this->session->data['token'], 'SSL');	
+			$this->data['ot_font'] = $this->url->link('font/font', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_font_category'] = $this->url->link('font/category', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_installer'] = $this->url->link('content_pack/install', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_product'] = $this->url->link('product/product', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_product_color'] = $this->url->link('product/color', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_product_size'] = $this->url->link('product/size', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_printing_method'] = $this->url->link('extension/printing_method', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_about'] = $this->url->link('module/opentshirts', 'token=' . $this->session->data['token'].'&tab=about', 'SSL');
+			$this->data['ot_business_center'] = $this->url->link('module/opentshirts', 'token=' . $this->session->data['token'].'&tab=business', 'SSL');
+			
+
+			]]></add>
+		</operation>
+	</file>
+</modification>

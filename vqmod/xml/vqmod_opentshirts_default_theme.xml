@@ -1,0 +1,240 @@
+<modification>
+	<id>OPENTSHIRTS</id>
+	<version>1.0</version>
+	<vqmver>2.3.2</vqmver>
+	<author>joseandriani</author>	
+	<file name="catalog/controller/product/product.php">
+		<operation>
+			<search position="after" offset="4"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/product/product.tpl')) {]]></search>
+			<add><![CDATA[
+
+			$this->load->model('opentshirts/product');
+			$is_printable = $this->model_opentshirts_product->isPrintable($this->request->get['product_id']);
+			if($is_printable) {
+				$this->load->language('opentshirts/product');
+
+				$this->load->model('opentshirts/price_product');
+				$this->load->model('opentshirts/product_color');
+				$this->load->model('opentshirts/product_size');
+				$this->data['price_matrix'] = $this->model_opentshirts_price_product->getPrice($this->request->get['product_id']);
+				$this->data['quantities'] = $this->model_opentshirts_price_product->getQuantities($this->request->get['product_id']);
+				$this->data['color_groups'] = $this->model_opentshirts_product_color->getColorGroups();
+
+				$this->data['sizes_id'] = $this->model_opentshirts_product->getSizes($this->request->get['product_id']);
+				$this->data['all_sizes'] = $this->model_opentshirts_product_size->getSizes();
+
+				$this->data['text_price'] = $this->language->get('text_price');
+				$this->data['text_sizes'] = $this->language->get('text_sizes');
+				$this->data['text_quantities'] = $this->language->get('text_quantities');
+
+				foreach($this->data['price_matrix'] as &$price_array) {
+					foreach($price_array as &$price_value) {
+						$price_value = $this->currency->format($price_value);
+					}
+					unset($price_value);
+				}
+				unset($price_array);				
+
+				$this->data['link_customize'] = $this->url->link('studio/home', 'product_id=' . $this->request->get['product_id']);
+				
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+
+				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/opentshirts/product.tpl')) {
+					$this->template = $this->config->get('config_template') . '/template/opentshirts/product.tpl';
+				} else {
+					$this->template = 'default/template/opentshirts/product.tpl';
+				}
+			}
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/product/category.php">
+		<operation>
+			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
+			<add><![CDATA[
+
+				$this->load->language('opentshirts/product');
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
+
+				$this->load->model('opentshirts/product');
+				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
+				
+				$this->data['products'][] = array(
+					'is_printable'  => $is_printable,
+					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/*/template/product/category.tpl">
+		<operation>
+			<search position="replace" offset="12"><![CDATA[<?php if ($product['price']) { ?>]]></search>
+			<add><![CDATA[
+		<?php if ($product['is_printable']) { ?>
+			<div style="overflow: auto; float: left; height: 42px;" class="ot_button">
+	          <a href="<?php echo $product['link_customize']; ?>" target="_new">
+	            <div style="background: url('catalog/view/theme/default/image/1.png') no-repeat scroll 0 0 transparent; float: left;
+	    height: 42px; width: 41px; "></div>
+	            <div style="background: url('catalog/view/theme/default/image/2.png') repeat-x scroll 0 0 transparent; float: left;
+	    height: 42px;  color: white; font-size: 16px; padding: 7px 5px 0px 5px; "><?php echo $text_link_customize; ?></div>
+	            <div style="background: url('catalog/view/theme/default/image/3.png') no-repeat scroll 0 0 transparent; float: left;
+	    height: 42px; width: 41px; "></div>
+	          </a>
+	        </div>
+			<div class="price">
+				<?php echo $text_starting_at; ?><?php echo $product['price']; ?>
+			</div>
+		<?php } else { ?>
+			<?php if ($product['price']) { ?>
+			<div class="price">
+			  <?php if (!$product['special']) { ?>
+			  <?php echo $product['price']; ?>
+			  <?php } else { ?>
+			  <span class="price-old"><?php echo $product['price']; ?></span> <span class="price-new"><?php echo $product['special']; ?></span>
+			  <?php } ?>
+			  <?php if ($product['tax']) { ?>
+			  <br />
+			  <span class="price-tax"><?php echo $text_tax; ?> <?php echo $product['tax']; ?></span>
+			  <?php } ?>
+			</div>
+			<?php } ?>
+		<?php } ?>
+				]]></add>
+		</operation>
+		<operation>
+			<search position="after" index="1" ><![CDATA[html += '  <div class="description">' + $(element).find('.description').html() + '</div>';]]></search>
+			<add><![CDATA[
+			
+			var ot_button = $(element).find('.ot_button').html();
+			
+			if (ot_button != null) {
+				html += '<div class="ot_button">' + ot_button  + '</div>';
+			}
+
+				]]></add>
+		</operation>
+		<operation>
+			<search position="before" index="2" ><![CDATA[var price = $(element).find('.price').html();]]></search>
+			<add><![CDATA[
+			
+			var ot_button = $(element).find('.ot_button').html();
+			
+			if (ot_button != null) {
+				html += '<div class="ot_button" style="display:none">' + ot_button  + '</div>';
+			}
+
+				]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/product/search.php">
+		<operation>
+			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
+			<add><![CDATA[
+
+				$this->load->language('opentshirts/product');
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
+
+				$this->load->model('opentshirts/product');
+				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
+				
+				$this->data['products'][] = array(
+					'is_printable'  => $is_printable,
+					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/*/template/product/search.tpl">
+		<operation>
+			<search position="replace" offset="12"><![CDATA[<?php if ($product['price']) { ?>]]></search>
+			<add><![CDATA[
+		<?php if ($product['is_printable']) { ?>
+			<div style="overflow: auto; float: left; height: 42px;" class="ot_button">
+	          <a href="<?php echo $product['link_customize']; ?>" target="_new">
+	            <div style="background: url('catalog/view/theme/default/image/1.png') no-repeat scroll 0 0 transparent; float: left;
+	    height: 42px; width: 41px; "></div>
+	            <div style="background: url('catalog/view/theme/default/image/2.png') repeat-x scroll 0 0 transparent; float: left;
+	    height: 42px;  color: white; font-size: 16px; padding: 7px 5px 0px 5px; "><?php echo $text_link_customize; ?></div>
+	            <div style="background: url('catalog/view/theme/default/image/3.png') no-repeat scroll 0 0 transparent; float: left;
+	    height: 42px; width: 41px; "></div>
+	          </a>
+	        </div>
+			<div class="price">
+				<?php echo $text_starting_at; ?><?php echo $product['price']; ?>
+			</div>
+		<?php } else { ?>
+			<?php if ($product['price']) { ?>
+			<div class="price">
+			  <?php if (!$product['special']) { ?>
+			  <?php echo $product['price']; ?>
+			  <?php } else { ?>
+			  <span class="price-old"><?php echo $product['price']; ?></span> <span class="price-new"><?php echo $product['special']; ?></span>
+			  <?php } ?>
+			  <?php if ($product['tax']) { ?>
+			  <br />
+			  <span class="price-tax"><?php echo $text_tax; ?> <?php echo $product['tax']; ?></span>
+			  <?php } ?>
+			</div>
+			<?php } ?>
+		<?php } ?>
+				]]></add>
+		</operation>
+		<operation>
+			<search position="after" index="1" ><![CDATA[html += '  <div class="description">' + $(element).find('.description').html() + '</div>';]]></search>
+			<add><![CDATA[
+			
+			var ot_button = $(element).find('.ot_button').html();
+			
+			if (ot_button != null) {
+				html += '<div class="ot_button">' + ot_button  + '</div>';
+			}
+
+				]]></add>
+		</operation>
+		<operation>
+			<search position="before" index="2" ><![CDATA[var price = $(element).find('.price').html();]]></search>
+			<add><![CDATA[
+			
+			var ot_button = $(element).find('.ot_button').html();
+			
+			if (ot_button != null) {
+				html += '<div class="ot_button" style="display:none">' + ot_button  + '</div>';
+			}
+
+				]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/account/account.php">
+		<operation>
+			<search position="before"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/account/account.tpl')) {]]></search>
+			<add><![CDATA[
+
+			$this->language->load('opentshirts/account');
+			
+			$this->data['text_my_designs'] = $this->language->get('text_my_designs');
+
+    		$this->data['my_designs'] = $this->url->link('opentshirts/account/mydesigns', '', 'SSL');
+			
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/*/template/account/account.tpl">
+		<operation>
+			<search position="after"><![CDATA[<li><a href="<?php echo $transaction; ?>"><?php echo $text_transaction; ?></a></li>]]></search>
+			<add><![CDATA[
+
+			<li><a href="<?php echo $my_designs; ?>"><?php echo $text_my_designs; ?></a></li>
+			
+
+			]]></add>
+		</operation>
+	</file>
+</modification>
+
+
+
+
+
+

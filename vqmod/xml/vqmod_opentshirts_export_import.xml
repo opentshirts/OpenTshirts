@@ -1,0 +1,34 @@
+<modification>
+	<id>OPENTSHIRTS PRODUCT IMPORT - EXPORT</id>
+	<version>1.0</version>
+	<vqmver>2.1.7</vqmver>
+	<author>joseandriani</author>	
+	
+	<file name="admin/view/template/common/header.tpl">
+		<operation>
+			<search position="after"><![CDATA[<li><a href="<?php echo $feed; ?>"><?php echo $text_feed; ?></a></li>]]></search>
+			<add><![CDATA[
+			<li><a class="parent">Product Import/Export</a>
+            <ul>
+              <li><a href="<?php echo $ot_product_import; ?>">Import</a></li>
+              <li><a href="<?php echo $ot_product_export; ?>">Export</a></li>
+            </ul>
+        	</li>
+
+			]]></add>
+		</operation>
+	</file>
+	<file name="admin/controller/common/header.php">
+		<operation>
+			<search position="after"><![CDATA[$this->data['feed'] = $this->url->link('extension/feed', 'token=' . $this->session->data['token'], 'SSL');]]></search>
+			<add><![CDATA[
+			
+			$this->data['ot_product_import'] = $this->url->link('opentshirts/product_export/form', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['ot_product_export'] = $this->url->link('opentshirts/product_export', 'token=' . $this->session->data['token'], 'SSL');
+
+			]]></add>
+		</operation>
+	</file>
+
+</modification>
+
