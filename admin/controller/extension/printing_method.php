@@ -123,7 +123,7 @@ class ControllerExtensionPrintingMethod extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate_autoselect()) {
 
-			$this->request->post['ot_enable_autoselect'] = ($this->request->post['enable_autoselect'])?1:0;
+			$this->request->post['ot_enable_autoselect'] = !empty($this->request->post['enable_autoselect'])?1:0;
 			unset($this->request->post['enable_autoselect']);
 			$this->request->post['ot_quantities'] = $this->request->post['quantities'];
 			unset($this->request->post['quantities']);

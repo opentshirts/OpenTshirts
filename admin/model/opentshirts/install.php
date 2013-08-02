@@ -489,9 +489,9 @@ class ModelOpentshirtsInstall extends Model {
 		}
 		$this->db->query("INSERT INTO " . DB_PREFIX . "setting SET `group` = 'opentshirts_setting', `key` = 'product_size_option_id', `value` = '" . $option_id . "'");
 
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.xml");
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.xml");
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.xml");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.xml");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.xml");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.ignore", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.xml");
 		
 	}
 
@@ -552,9 +552,9 @@ class ModelOpentshirtsInstall extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE `group` = 'opentshirts'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE `group` = 'opentshirts_setting'");
 
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.ignore");
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.ignore");
-		@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.ignore");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts.ignore");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_default_theme.ignore");
+		//@rename(DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.xml", DIR_APPLICATION . "../vqmod/xml/vqmod_opentshirts_export_import.ignore");
 
 	}
 
