@@ -92,6 +92,15 @@
 			} else {
 				//echo("options for printable product not defined: ");
 			} 
+
+			// Profile
+                
+            /*if (!empty($product[2])) {
+                $profile_id = $product[2];
+            } else {
+                $profile_id = 0;
+            }*/ 
+            $profile_id = 0;
 			
 			$composition_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "composition c LEFT JOIN " . DB_PREFIX . "design d ON (c.id_composition = d.id_composition) WHERE c.id_composition = '" . $id_composition . "' AND c.deleted = '0' AND c.editable = '1' ");
 
@@ -255,6 +264,37 @@
 					$stock = false;
 				}*/
 
+				$recurring = false;
+                $recurring_frequency = 0;
+                $recurring_price = 0;
+                $recurring_cycle = 0;
+                $recurring_duration = 0;
+                $recurring_trial_status = 0;
+                $recurring_trial_price = 0;
+                $recurring_trial_cycle = 0;
+                $recurring_trial_duration = 0;
+                $recurring_trial_frequency = 0;
+                $profile_name = '';
+                
+                /*if ($profile_id) {
+                    $profile_info = $this->db->query("SELECT * FROM `" . DB_PREFIX . "profile` `p` JOIN `" . DB_PREFIX . "product_profile` `pp` ON `pp`.`profile_id` = `p`.`profile_id` AND `pp`.`product_id` = " . (int) $product_query->row['product_id'] . " JOIN `" . DB_PREFIX . "profile_description` `pd` ON `pd`.`profile_id` = `p`.`profile_id` AND `pd`.`language_id` = " . (int) $this->config->get('config_language_id') . " WHERE `pp`.`profile_id` = " . (int) $profile_id . " AND `status` = 1 AND `pp`.`customer_group_id` = " . (int) $customer_group_id)->row;
+                    
+                    if ($profile_info) {
+                        $profile_name = $profile_info['name'];
+                        
+                        $recurring = true;
+                        $recurring_frequency = $profile_info['frequency'];
+                        $recurring_price = $profile_info['price'];
+                        $recurring_cycle = $profile_info['cycle'];
+                        $recurring_duration = $profile_info['duration'];
+                        $recurring_trial_frequency = $profile_info['trial_frequency'];
+                        $recurring_trial_status = $profile_info['trial_status'];
+                        $recurring_trial_price = $profile_info['trial_price'];
+                        $recurring_trial_cycle = $profile_info['trial_cycle'];
+                        $recurring_trial_duration = $profile_info['trial_duration'];
+                    }
+                }*/
+
 				if ($flag_remove === true) {
 					$this->remove($key);
 				} else {
@@ -282,7 +322,19 @@
 						'length'          => $product_query->row['length'],
 						'width'           => $product_query->row['width'],
 						'height'          => $product_query->row['height'],
-						'length_class_id' => $product_query->row['length_class_id']					
+						'length_class_id' => $product_query->row['length_class_id'],
+						'profile_id'                => $profile_id,
+                        'profile_name'              => $profile_name,
+                        'recurring'                 => $recurring,
+                        'recurring_frequency'       => $recurring_frequency,
+                        'recurring_price'           => $recurring_price,
+                        'recurring_cycle'           => $recurring_cycle,
+                        'recurring_duration'        => $recurring_duration,
+                        'recurring_trial'           => $recurring_trial_status,
+                        'recurring_trial_frequency' => $recurring_trial_frequency,
+                        'recurring_trial_price'     => $recurring_trial_price,
+                        'recurring_trial_cycle'     => $recurring_trial_cycle,
+                        'recurring_trial_duration'  => $recurring_trial_duration,				
 					);
 				}
 			} else {
