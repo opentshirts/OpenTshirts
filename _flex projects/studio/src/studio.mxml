@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:comp="components.*"
+			   xmlns:components="view.components.*"
+			   preloader="preloader.CustomPreloader">
+	<fx:Style source="style/global.css"/>	
+	<comp:AppLayout id="App" />
+</s:Application>

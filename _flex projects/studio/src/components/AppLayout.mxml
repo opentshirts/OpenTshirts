@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:AppLogic xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						 xmlns:s="library://ns.adobe.com/flex/spark" 
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="components.*" 
+						 width="100%" height="100%"						 
+						 >
+	<s:Group id="compositionPane">
+		<!--<s:Rect top="0" bottom="0" left="0" right="0">
+			<s:stroke>
+				<s:SolidColorStroke color="0" weight="1" />
+			</s:stroke>
+			<s:fill>
+				<s:BitmapFill source="@Embed('image/transparent.png')" fillMode="repeat" />
+			</s:fill>
+		</s:Rect>-->
+		<s:Group id="compositionContainer" name="compositionContainer">
+			
+		</s:Group>
+	</s:Group>
+	<s:Group id="controls" >
+	</s:Group>
+</components:AppLogic>

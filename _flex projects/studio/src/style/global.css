@@ -1,0 +1,38 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+s|Application {
+	backgroundAlpha : 0;	
+}
+s|BorderContainer {
+	backgroundAlpha : .6;
+	backgroundColor : "0xEEEEEE";
+	borderAlpha: 1;
+	borderWeight : 2;
+	contentBackgroundAlpha : 0;
+	cornerRadius: 10;
+	dropShadowVisible : true;
+	
+}
+/*@font-face{
+	src:url("assets/arialbd.ttf");
+	fontFamily: Arial;
+	fontWeight:bold;
+	embed-as-cff:true;
+}
+@font-face{
+	src:url("assets/arial.ttf");
+	fontFamily: Arial;
+	embed-as-cff:true;
+}*/
+
+/*@font-face{
+	src:url("assets/Arial.swf");
+	fontFamily: Arial;
+	font-weight:bold;
+}
+@font-face{
+	src:url("assets/Arial.swf");
+	fontFamily: Arial;
+}*/

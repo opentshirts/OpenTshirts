@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:spark="flex.utils.spark.*"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   dropShadowVisible="false"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)" xmlns:components="view.components.*" xmlns:designElement="view.components.designElement.*">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import events.DesignColorPickerEvent;
+			import events.TextEvent;
+			
+			import mx.collections.ArrayList;
+			import mx.events.ColorPickerEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			
+			[Bindable]
+			public var colors:ArrayList;
+			[Bindable]
+			public var text:String;
+			private var _font:String;
+			[Bindable]
+			public var spacing:Number;
+			[Bindable]
+			public var color:uint;
+
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom = 0;
+				this.left = 252;
+				
+			}
+			
+			protected function fontList_changeHandler(event:IndexChangeEvent):void
+			{
+				if(fontList.selectedItems.length==1)
+				{
+					var fontName:String = fontList.selectedItem.name;
+					dispatchEvent(new events.TextEvent(events.TextEvent.FONT_CHANGE,false,false,fontName));
+				}
+			}
+			
+			protected function textInput_keyUpHandler(event:KeyboardEvent):void
+			{
+				//if(event.keyCode==Keyboard.DELETE )
+				//{
+				//avoid remove element from design
+				event.stopPropagation();
+				//}
+			}
+			
+			protected function textInput_changeHandler(event:TextOperationEvent):void
+			{
+				var text:String = textInput.text;
+				dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_CHANGE,false,false,text));
+			}
+			
+			protected function cp_changeHandler(event:ColorPickerEvent):void
+			{
+				dispatchEvent(new DesignColorPickerEvent(DesignColorPickerEvent.COLOR_CHANGE, true, false, {color:cp.selectedItem}));
+			}
+			
+			protected function sldSpacing_changeEndHandler(event:FlexEvent):void
+			{
+				var spacing:Number = sldSpacing.value;
+				dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_SPACING_CHANGE,false,false,spacing));
+			}
+			protected function spacing_changeHandler(event:Event):void
+			{
+				var spacing:Number = sldSpacing.value;
+				dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_SPACING_CHANGING,false,false,spacing));
+			}
+			
+
+			
+			[Bindable]
+			public function get font():String
+			{
+				return _font;
+			}
+			
+			public function set font(value:String):void
+			{
+				_font = value;
+				
+				for each (var obj:Object in fontList.dataProvider)
+				{
+					if(obj.name == _font)
+					{
+						fontList.selectedItem = obj;
+						break;
+					}
+				}
+			}			
+			
+		]]>
+	</fx:Script>
+	<!--<spark:TitledBorderBox left="5" right="5" top="20" bottom="5" paddingBottom="5" paddingLeft="5"
+	paddingRight="5" paddingTop="5"
+	title="{resourceManager.getString('languageResources','TEXT')}">
+	<spark:layout>
+	<s:VerticalLayout/>
+	</spark:layout>-->
+	<s:VGroup left="5" right="5" top="31" bottom="5" paddingBottom="0" paddingLeft="0"
+			  paddingRight="0" paddingTop="0">
+		<s:HGroup verticalAlign="middle" width="100%">
+			<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='editTextSymbol')"/>
+			<s:Label text="{resourceManager.getString('languageResources','ENTER_TEXT')}" textAlign="right"
+					 verticalAlign="middle" color="0xffffff" fontFamily="Arial" fontSize="18" fontWeight="bold"/>
+			<s:Spacer width="100%"/>
+			<s:TextInput id="textInput"   width="202"
+						 change="textInput_changeHandler(event)"
+						 keyUp="textInput_keyUpHandler(event)" paddingBottom="5" paddingLeft="5" contentBackgroundAlpha="1"
+						 paddingRight="5" paddingTop="5" text="{text}" contentBackgroundColor="0xffffff" focusAlpha="0" />
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle" width="100%">
+			<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='selectFontSymbol')"/>
+			<s:Label text="{resourceManager.getString('languageResources','FONT')}" textAlign="right"
+					 verticalAlign="middle" color="0xffffff" fontFamily="Arial" fontSize="18" fontWeight="bold"/>
+			<s:Spacer width="100%"/>
+			<s:DropDownList id="fontList" height="34" width="250"
+							requireSelection="true"
+							change="fontList_changeHandler(event)" contentBackgroundAlpha="1.0"
+							itemRenderer="renderer.FontListItemRenderer"
+							skinClass="skins.FontDropDownList"
+							labelField="name"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle" width="100%">
+			<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textColorSymbol')"/>
+			<s:Label text="{resourceManager.getString('languageResources','COLOR')}"
+					 textAlign="right" verticalAlign="middle" fontFamily="Arial" fontWeight="bold" color="0xffffff" fontSize="18"/>
+			<s:Spacer width="100%"/>
+			<designElement:DesignColorPicker id="cp" selectedColor="{color}" dataProvider="{colors}" change="cp_changeHandler(event)" />
+		</s:HGroup>
+		<s:VGroup verticalAlign="middle" width="100%">
+			<s:HGroup verticalAlign="middle" width="100%">
+				<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textSpaceSymbol')"/>
+				<s:Label text="{resourceManager.getString('languageResources','SPACING')}"
+						 textAlign="right" verticalAlign="middle" fontFamily="Arial" color="0xffffff" fontSize="18" fontWeight="bold"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Spacer width="30"/>
+				<s:HSlider id="sldSpacing" focusEnabled="false" width="100%" value="{spacing}" changeEnd="sldSpacing_changeEndHandler(event)"  change="spacing_changeHandler(event)"
+						   stepSize="0.5" minimum="-20" maximum="20" skinClass="skins.TextSpacingSliderSkin"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:VGroup>
+	
+	
+	<!--</spark:TitledBorderBox>-->
+</s:BorderContainer>

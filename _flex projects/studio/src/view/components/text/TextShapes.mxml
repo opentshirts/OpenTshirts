@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   height="257"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   dropShadowVisible="false"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import Interfaces.IEnvelope;
+			import Interfaces.ITextLayout;
+			
+			import events.ArcTextLayoutEvent;
+			import events.SimpleEnvelopeEvent;
+			import events.TextEvent;
+			
+			import model.elements.text.envelope.EnvelopeTypeEnum;
+			import model.elements.text.envelope.SimpleEnvelopeEffectEnum;
+			import model.elements.text.envelope.SimpleEnvelopeVO;
+			import model.elements.text.layout.ArcTextLayoutVO;
+			import model.elements.text.layout.TextLayoutEnum;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			
+			import spark.events.IndexChangeEvent;
+			[Bindable]
+			private var arcTextLayout:ArcTextLayoutVO;
+			[Bindable]
+			private var simpleEnvelope:SimpleEnvelopeVO;
+			
+			[Bindable]
+			public var effectList:ArrayCollection = new ArrayCollection();
+			public var sp:String = "";//"http://opentshirts.com/";//
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom = 0;
+				this.left = 0;
+				effectList.addItem({source:sp+"image/text_shape/normal.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.NONE}})
+				effectList.addItem({source:sp+"image/text_shape/arc.png", layout:{name:TextLayoutEnum.ARC}, envelope:{type:EnvelopeTypeEnum.NONE}})
+				effectList.addItem({source:sp+"image/text_shape/envelope1.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT1}});
+				effectList.addItem({source:sp+"image/text_shape/envelope2.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT2}});
+				effectList.addItem({source:sp+"image/text_shape/envelope3.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT3}});
+				effectList.addItem({source:sp+"image/text_shape/envelope4.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT4}});
+				effectList.addItem({source:sp+"image/text_shape/envelope5.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT5}});
+				effectList.addItem({source:sp+"image/text_shape/envelope6.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT6}});
+				effectList.addItem({source:sp+"image/text_shape/envelope7.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT7}});
+				effectList.addItem({source:sp+"image/text_shape/envelope8.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT8}});
+				effectList.addItem({source:sp+"image/text_shape/envelope9.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT9}});
+				effectList.addItem({source:sp+"image/text_shape/envelope10.png", layout:{name:TextLayoutEnum.NORMAL}, envelope:{type:EnvelopeTypeEnum.SIMPLE, effectNumber:SimpleEnvelopeEffectEnum.EFFECT10}});
+				
+			}
+			protected function effectDropDownList_changeHandler(event:IndexChangeEvent):void
+			{
+				var selectedLayout:Object = effectDropDownList.selectedItem.layout;
+				var selectedEnvelope:Object = effectDropDownList.selectedItem.envelope;
+				
+				dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_LAYOUT_CHANGE,false,false,selectedLayout));
+				dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_ENVELOPE_CHANGE,false,false,selectedEnvelope));
+				
+			}
+			protected function sldSimpleEnvelopeAmount_changeHandler(event:Event):void
+			{
+				dispatchEvent(new SimpleEnvelopeEvent(SimpleEnvelopeEvent.AMOUNT_CHANGING,false,false,{amount:sldSimpleEnvelopeAmount.value, uid:simpleEnvelope.uid}));
+			}
+			protected function sldSimpleEnvelopeAmount_changeEndHandler(event:FlexEvent):void
+			{
+				dispatchEvent(new SimpleEnvelopeEvent(SimpleEnvelopeEvent.AMOUNT_CHANGE,false,false,{amount:sldSimpleEnvelopeAmount.value, uid:simpleEnvelope.uid}));
+			}
+			protected function sldArcLayoutRadio_changeHandler(event:Event):void
+			{
+				dispatchEvent(new ArcTextLayoutEvent(ArcTextLayoutEvent.RADIO_CHANGING,false,false,{radio:sldArcLayoutRadio.value, uid:arcTextLayout.uid}));
+			}
+			protected function sldArcLayoutRadio_changeEndHandler(event:FlexEvent):void
+			{
+				dispatchEvent(new ArcTextLayoutEvent(ArcTextLayoutEvent.RADIO_CHANGE,false,false,{radio:sldArcLayoutRadio.value, uid:arcTextLayout.uid}));
+			}
+			public function setShape(layout:ITextLayout, envelope:IEnvelope):void
+			{
+				sldArcLayoutRadio.visible = false;
+				sldSimpleEnvelopeAmount.visible = false;
+				
+				for each (var obj:Object in effectList)
+				{
+					if(obj.layout.name == layout.name && obj.envelope.type == envelope.type)
+					{
+						if(envelope.type == EnvelopeTypeEnum.SIMPLE)
+						{
+							if(obj.envelope.effectNumber == SimpleEnvelopeVO(envelope).effectNumber)
+							{
+								simpleEnvelope = SimpleEnvelopeVO(envelope);
+								effectDropDownList.selectedItem = obj;
+								sldSimpleEnvelopeAmount.visible = true;
+								break;
+							}
+						}else if(layout.name == TextLayoutEnum.ARC)
+						{
+							arcTextLayout = ArcTextLayoutVO(layout)
+							sldArcLayoutRadio.visible = true;
+							effectDropDownList.selectedItem = obj;
+							break;
+						}else
+						{
+							effectDropDownList.selectedItem = obj;
+							break;
+						}
+					}
+				}
+				
+			}
+
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup gap="6" width="100%" height="100%" left="5" right="5" top="31" paddingTop="5" paddingLeft="0" paddingRight="0">
+		<s:HGroup width="100%" verticalAlign="middle"  gap="2" paddingLeft="5" paddingRight="0">
+			<s:Group width="80">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textEffectIcon')" 
+						  width="79" height="54" maintainAspectRatio="false"/>	
+			</s:Group>
+			<s:HGroup verticalAlign="middle"  paddingRight="5">	
+				<!--<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='designStudioTitle')" 
+				width="165" height="46" maintainAspectRatio="false"/>-->
+				<s:VGroup paddingLeft="0" paddingRight="0">
+					<s:Label text="{resourceManager.getString('languageResources','TEXT_SHAPE')}" fontFamily="Arial" 
+							 fontSize="22"  fontWeight="bold" color="0xffffff"/>
+					<s:Label text="{resourceManager.getString('languageResources','SELECT_TEXT_SHAPE')}" fontFamily="Arial" 
+							 fontSize="18"  color="0xffffff"/>
+				</s:VGroup>
+				
+			</s:HGroup>
+		</s:HGroup>
+		<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:DropDownList id="effectDropDownList" itemRenderer="renderer.TextEffectListItemRenderer"
+							contentBackgroundAlpha="1" requireSelection="true"
+							dataProvider="{effectList}" change="effectDropDownList_changeHandler(event)"
+							skinClass="skins.TextEffectDropDownList"/>
+		</s:HGroup>
+		<s:VGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:Label text="{resourceManager.getString('languageResources','ADJUST_EFFECTS')}" textAlign="right"
+					 verticalAlign="middle" fontFamily="Arial" color="0xffffff" fontSize="18" fontWeight="bold"/>
+			<s:Group width="100%">
+				<s:layout>
+					<s:BasicLayout/>
+				</s:layout>
+				
+				<!--SIMPLE ENVELOPE LAYOUT-->
+				<s:HSlider id="sldSimpleEnvelopeAmount" left="0" right="0"
+						   change="sldSimpleEnvelopeAmount_changeHandler(event)"
+						   changeEnd="sldSimpleEnvelopeAmount_changeEndHandler(event)"
+						   focusEnabled="false" maximum="1" minimum="-1" snapInterval=".1"
+						   stepSize="0.1" value="{simpleEnvelope.amount}" verticalCenter="0"
+						   skinClass="skins.TextSpacingSliderSkin"/>
+				
+				<!--ARC TEXT LAYOUT-->
+				<s:HSlider id="sldArcLayoutRadio" left="0" right="0"
+						   change="sldArcLayoutRadio_changeHandler(event)"
+						   changeEnd="sldArcLayoutRadio_changeEndHandler(event)"
+						   focusEnabled="false" maximum="1" minimum="-1" snapInterval=".1"
+						   stepSize="0.1" value="{arcTextLayout.radio}" verticalCenter="0"
+						   skinClass="skins.TextSpacingSliderSkin"/>
+			</s:Group>
+		</s:VGroup>
+	</s:VGroup>	
+</s:BorderContainer>

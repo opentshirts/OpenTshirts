@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spark:BorderContainerSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark" 
+						   xmlns:mx="library://ns.adobe.com/flex/mx" 
+						   xmlns:spark="spark.skins.spark.*"
+						   creationComplete="creationCompleteHandler(event)" xmlns:resize="flex.utils.spark.resize.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			public var moveManager:MoveManager;
+			public var resizeManager:ResizeManager;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				if (hostComponent.minWidth == 0) {
+					hostComponent.minWidth = minWidth;
+				}
+				if (hostComponent.minHeight == 0) {
+					hostComponent.minHeight = minHeight;
+				}
+				moveManager = new MoveManager(hostComponent, dragHandle);
+				resizeManager = new ResizeManager(hostComponent, resizeHandle);
+			}
+			
+		]]>
+	</fx:Script>
+	<spark:layout>
+		<s:BasicLayout/>
+	</spark:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<spark:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+	</spark:states>
+	
+	<s:Group id="dragHandle" left="10" right="10" height="20">
+		<s:Rect left="0" right="0" top="5" bottom="5">
+			<s:fill>
+				<!--<s:SolidColor color="0" alpha=".5" />-->
+				<s:BitmapFill source="@Embed('assets/dragHandles.gif')"
+							  fillMode="repeat" alpha=".5">
+				</s:BitmapFill>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<resize:ResizeHandleDots id="resizeHandle" bottom="5" right="5" />
+	<s:Group id="contentGroup" left="0" right="0" top="20" bottom="0"/>
+</spark:BorderContainerSkin>

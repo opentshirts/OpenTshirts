@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false"
+				useHandCursor="true"
+				buttonMode="true"
+				mouseChildren="false"
+				>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<!-- hover/select highlight -->
+	<s:Rect width="100%" height="20">
+		<s:fill>
+			<s:SolidColor color="white" alpha=".2" alpha.hovered=".5"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="black" weight="1" />
+		</s:stroke>
+	</s:Rect>
+	<s:Label text="{data.name}" verticalCenter="0" left="2"/>
+	
+</s:ItemRenderer>

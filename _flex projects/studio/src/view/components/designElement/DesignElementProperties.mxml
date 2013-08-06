@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:spark="flex.utils.spark.*"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   dropShadowVisible="false"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import appFacade.ApplicationConstants;
+			
+			import events.AlignEvent;
+			import events.ArrangeEvent;
+			
+			import mx.events.FlexEvent;
+			
+			
+			public static const LOCK:String = "LOCK";
+			public static const UNLOCK:String = "UNLOCK";
+			public static const LOCK_PROPORTIONS:String = "LOCK_PROPORTIONS";
+			public static const UNLOCK_PROPORTIONS:String = "UNLOCK_PROPORTIONS";
+			public static const RESET_PROPORTIONS:String = "RESET_PROPORTIONS";
+			public static const SELECT_ALL:String = "SELECT_ALL";
+			public static const FLIP_H:String = "FLIP_H";
+			public static const FLIP_V:String = "FLIP_V";
+			public static const FIT_TO_AREA:String = "FIT_TO_AREA";
+			public static const UNDO:String = "UNDO";
+			public static const REDO:String = "REDO";
+			public static const CLEAR_SELECTION:String = "CLEAR_SELECTION";
+			public static const DUPLICATE:String = "DUPLICATE";
+			
+			[Bindable] public var txtWidth:String;
+			[Bindable] public var txtHeight:String;
+			[Bindable] public var txtRotation:String;
+			[Bindable] public var txtX:String;
+			[Bindable] public var txtY:String;
+			[Bindable] public var locked:Boolean;
+			[Bindable] public var maintainProportions:Boolean;
+			
+			protected function btnToTop_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ArrangeEvent(ArrangeEvent.BRING_TO_TOP));
+			}
+			
+			protected function btnToBottom_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ArrangeEvent(ArrangeEvent.BRING_TO_BOTTOM));
+			}
+			
+			protected function btnBackward_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ArrangeEvent(ArrangeEvent.BRING_BACKWARD));
+			}
+			
+			protected function btnForward_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ArrangeEvent(ArrangeEvent.BRING_FORWARD));
+			}
+			
+			protected function imgLocked_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(UNLOCK));
+			}
+			
+			protected function imgUnlocked_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(LOCK));
+			}
+			
+			protected function imgLockProportions_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(UNLOCK_PROPORTIONS));
+			}
+			
+			protected function imgUnlockProportions_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(LOCK_PROPORTIONS));
+			}
+			
+			protected function btnResetProportions_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(RESET_PROPORTIONS));
+			}
+			
+			protected function btnCenterVertical_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_CENTER_V));
+			}
+			
+			protected function btnCenterHorizontal_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_CENTER_H));
+			}
+			
+			protected function btnToRight_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_RIGHT));
+			}
+			
+			protected function btnToLeft_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_LEFT));
+			}
+			
+			protected function btnAlignToBottom_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_BOTTOM));
+			}
+			
+			protected function btnAlignToTop_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AlignEvent(AlignEvent.ALIGN_TO_TOP));
+			}
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.right = 0;
+				this.bottom = 0;
+			}
+			
+			protected function btnSelectAll_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(SELECT_ALL));
+			}
+			
+			protected function btnFit_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(FIT_TO_AREA));
+			}
+			
+			protected function btnFlipH_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(FLIP_H));
+			}
+			
+			protected function btnFlipV_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(FLIP_V));
+			}
+			
+			protected function btnUndo_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(UNDO));
+			}
+			
+			protected function btnRedo_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(REDO));
+			}
+			
+			protected function btnDuplicate_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(DUPLICATE));
+			}
+			
+			protected function btnClearSelection_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event(CLEAR_SELECTION));
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<!--<spark:TitledBorderBox left="5" right="5" top="20" bottom="5" paddingBottom="5" paddingLeft="5"
+	paddingRight="5" paddingTop="5"
+	title="{resourceManager.getString('languageResources','OBJECT_PROPERTIES')}">-->
+	<s:HGroup left="5" right="5" top="31" bottom="5" gap="5" paddingBottom="0" paddingLeft="0"
+			  paddingRight="0" paddingTop="0">
+	<s:VGroup gap="3" >
+		<!--<s:Label text="{resourceManager.getString('languageResources','OBJECT_PROPERTIES')}"
+				 fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"/>-->
+		<s:HGroup contentBackgroundAlpha="0.5" contentBackgroundColor="#FFFFFF" gap="6"
+				  verticalAlign="top">
+			<s:VGroup horizontalAlign="right">
+				<s:HGroup verticalAlign="middle">
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','WIDTH')}:"
+							 textAlign="right"/>
+					<s:TextInput text="{txtWidth}" editable="false" width="50"/>
+				</s:HGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','HEIGHT')}:"
+							 textAlign="right"/>
+					<s:TextInput text="{txtHeight}" editable="false" width="50"/>
+				</s:HGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','ROTATION')}:"
+							 textAlign="right"/>
+					<s:TextInput text="{txtRotation}" editable="false" width="50"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Group width="20" height="50">
+				<s:layout>
+					<s:BasicLayout/>
+				</s:layout>
+				<s:Path data="M 0 10 H 10 V 15 ">
+					<s:stroke>
+						<s:SolidColorStroke color="0" weight="1" alpha=".8" />
+					</s:stroke>
+				</s:Path>
+				<s:Image useHandCursor="true" buttonMode="true" 
+						 visible="{maintainProportions}"
+						 id="imgLockProportions" click="imgLockProportions_clickHandler(event)" 
+						 horizontalCenter="0" source="image/ico_SizeLocked.png" verticalCenter="0"/>
+				<s:Image useHandCursor="true" buttonMode="true"
+						 visible="{!maintainProportions}"
+						 id="imgUnlockProportions" click="imgUnlockProportions_clickHandler(event)" 
+						 horizontalCenter="0" source="image/ico_SizeUnlocked.png" verticalCenter="0"/>
+				<s:Path data="M 0 40 H 10 V 35 ">
+					<s:stroke>
+						<s:SolidColorStroke color="0" weight="1" alpha=".8" />
+					</s:stroke>
+				</s:Path>
+				<s:Image x="0" y="60" source="image/ico_Rotate.png"/>
+			</s:Group>
+			<mx:VRule height="80"/>
+			<s:VGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','X')}:"
+							 textAlign="right"/>
+					<s:TextInput text="{txtX}" editable="false" width="50"/>
+				</s:HGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','Y')}:"
+							 textAlign="right"/>
+					<s:TextInput text="{txtY}" editable="false" width="50"/>
+				</s:HGroup>
+				<s:HGroup verticalAlign="middle">
+					<s:Group width="27">
+						<s:Image id="imgLocked" x="0" buttonMode="true"
+								 visible="{locked}"
+								 click="imgLocked_clickHandler(event)" smooth="false"
+								 source="image/lock.png" useHandCursor="true"/>
+						<s:Image id="imgUnlocked" x="3" buttonMode="true"
+								 visible="{!locked}"
+								 click="imgUnlocked_clickHandler(event)" smooth="false"
+								 source="image/unlock.png" useHandCursor="true"/>
+					</s:Group>
+					<s:Label color="0xffffff" fontFamily="Arial" fontSize="12" fontWeight="bold"
+							 text="{resourceManager.getString('languageResources','LOCKED')}"
+							 textAlign="left"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+		<s:VGroup gap="10" horizontalAlign="center" paddingBottom="10" paddingTop="10">
+			<s:Button id="btnResetProportions" label="{resourceManager.getString('languageResources','RESET_PROPORTIONS')}"
+					  click="btnResetProportions_clickHandler(event)" fontFamily="Arial" 
+					  fontWeight="normal" fontSize="16" color="0x000000"/>
+			<spark:TitledBorderBox paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5"
+								   title="{resourceManager.getString('languageResources','ARRANGE')}"
+								   fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff">
+				<s:HGroup y="0">
+					<s:Button id="btnToTop" width="40" click="btnToTop_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','MOVE_TO_TOP')}"
+							  icon="image/Arrange-to-Front.png"/>
+					<s:Button id="btnToBottom" width="40" click="btnToBottom_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','MOVE_TO_BOTTOM')}"
+							  icon="image/Arrange-to-Back.png"/>
+					<s:Button id="btnForward" width="40" click="btnForward_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','MOVE_FORWARD')}"
+							  icon="image/Arrange-One-to-Front.png"/>
+					<s:Button id="btnBackward" width="40" click="btnBackward_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','MOVE_BACKWARD')}"
+							  icon="image/Arrange-One-to-Back.png"/>
+				</s:HGroup>
+			</spark:TitledBorderBox>
+			<spark:TitledBorderBox paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5"
+								   title="{resourceManager.getString('languageResources','ALIGN')}"
+								   fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff">
+				<spark:layout>
+					<s:VerticalLayout/>
+				</spark:layout>
+				<s:HGroup>
+					<s:Button id="btnAlignToBottom" width="40" click="btnAlignToBottom_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','ALIGN_TO_BOTTOM')}"
+							  icon="image/Align-Bottom.png"/>
+					<s:Button id="btnAlignToTop" width="40" click="btnAlignToTop_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','ALIGN_TO_TOP')}"
+							  icon="image/Align-Top.png"/>
+					<s:Button id="btnToLeft" width="40" click="btnToLeft_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','ALIGN_TO_LEFT')}"
+							  icon="image/Align-Left.png"/>
+					<s:Button id="btnToRight" width="40" click="btnToRight_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','ALIGN_TO_RIGHT')}"
+							  icon="image/Align-Right.png"/>
+				</s:HGroup>
+				<s:HGroup>
+					<s:Button id="btnCenterHorizontal" width="40" click="btnCenterHorizontal_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','CENTER_HORIZONTAL')}"
+							  icon="image/Align-Vertical-Center.png"/>
+					<s:Button id="btnCenterVertical" width="40" click="btnCenterVertical_clickHandler(event)"
+							  toolTip="{resourceManager.getString('languageResources','CENTER_VERTICAL')}"
+							  icon="image/Align-Horizontal-Center.png"/>
+				</s:HGroup>
+			</spark:TitledBorderBox>
+		</s:VGroup>
+
+		
+	</s:VGroup>
+	<s:VGroup paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+		<s:Button id="btnSelectAll" width="40" click="btnSelectAll_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','SELECT_ALL')}"
+				  icon="image/select-all.png"/>
+		<s:Button id="btnFit" width="40"  click="btnFit_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','FIT_TO_AREA')}"
+				  icon="image/fit.png"/>
+		<s:Button id="btnFlipH" width="40" click="btnFlipH_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','FLIP_H')}"
+				  icon="image/flip-h.png"/>
+		<s:Button id="btnFlipV" width="40" click="btnFlipV_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','FLIP_V')}"
+				  icon="image/flip-v.png"/>
+		<s:Button id="btnUndo" width="40" click="btnUndo_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','UNDO')}"
+				  icon="image/undo.png"/>
+		<s:Button id="btnRedo" width="40" click="btnRedo_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','REDO')}"
+				  icon="image/redo.png"/>
+		<s:Button id="btnDuplicate" width="40" click="btnDuplicate_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','DUPLICATE')}"
+				  icon="image/duplicate.png"/>
+		<s:Button id="btnClearSelection" width="40" click="btnClearSelection_clickHandler(event)"
+				  toolTip="{resourceManager.getString('languageResources','CLEAR_SELECTION')}"
+				  icon="image/clear_selection.png"/>
+	</s:VGroup>
+	</s:HGroup>
+	<!--</spark:TitledBorderBox>-->
+	
+</s:BorderContainer>

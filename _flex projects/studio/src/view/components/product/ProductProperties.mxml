@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   minHeight="170" backgroundColor="0x4D4C4D" cornerRadius="3"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)"
+				   dropShadowVisible="false"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin">
+	<s:layout>
+		<s:BasicLayout>
+		</s:BasicLayout>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import events.ProductEvent;
+			
+			import model.products.vo.ProductColorVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			private var _views:ArrayCollection;
+			
+			[Bindable]
+			public var colors:ArrayCollection;
+			[Bindable]
+			public var producName:String;
+			
+			
+			[Bindable]
+			public function get views():ArrayCollection
+			{
+				return _views;
+			}
+			
+			public function set views(value:ArrayCollection):void
+			{
+				_views = value;
+			}
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.right = 0;
+				this.bottom = 170;
+			}
+			
+			
+			protected function prodCat_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.ProductEvent(events.ProductEvent.LOAD_PRODUCT_LIST));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:VGroup top="30" gap="6" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="0"
+			  verticalAlign="middle">
+		<s:HGroup gap="10" verticalAlign="middle">
+			<s:Group>
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='printLocSymb')" 
+						  width="50" height="50" maintainAspectRatio="false"/>	
+			</s:Group>
+			
+			<s:VGroup height="45" horizontalAlign="left" verticalAlign="middle">	
+					<s:Label text="{resourceManager.getString('languageResources','PRINT_LOCATIONS')}" fontFamily="Arial" 
+							 fontSize="22"  fontWeight="bold" color="0xffffff"/>
+					<s:Label text="{resourceManager.getString('languageResources','TEXT_HOVER_IMAGE')}" fontFamily="Arial" 
+							 fontSize="19"  color="0xffffff"/>
+			</s:VGroup>
+		</s:HGroup>
+		<s:Label text="{resourceManager.getString('languageResources','AVAILABLE_PRINT_LOCATIONS')}"
+				 color="0xffffff" fontFamily="Arial" fontSize="18" fontWeight="bold"/>
+		<s:List id="view_list" borderVisible="false"
+				dataProvider="{views}" enabled="true"
+				itemRenderer="renderer.ViewListItemRenderer" >
+			<s:layout>
+				<s:TileLayout horizontalGap="2" verticalGap="2" />
+			</s:layout>
+		</s:List>
+		<s:Label text="{resourceManager.getString('languageResources','PRODUCT_INFORMATION')}" color="0xffffff" fontFamily="Arial" fontSize="18" 
+				  fontWeight="bold"/>
+		<s:Label text="{producName}" color="0xffffff" fontFamily="Arial" fontSize="12" 
+				  fontWeight="bold"/>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='printLocBookSymbol')" />
+			<s:Button width="218"  height="33" id="prodCat" skinClass="skins.DesignPanelButtonSkin"
+					  label="{resourceManager.getString('languageResources','PRODUCT_CATALOG_BUTTON')}"  fontSize="18" fontWeight="bold" fontFamily="Arial" 
+					  useHandCursor="true" buttonMode="true" click="prodCat_clickHandler(event)" />
+		</s:HGroup>
+		<!--<s:Label text="{resourceManager.getString('languageResources','PRODUCT_PROPERTIES_HELP1')}"></s:Label>-->
+	</s:VGroup>
+</s:BorderContainer>

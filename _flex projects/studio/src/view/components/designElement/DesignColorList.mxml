@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   width="234"
+				   dropShadowVisible="false"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)" xmlns:spark="flex.utils.spark.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.DesignColorPickerEvent;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom = 364;
+				this.right = 400;
+			}
+			[Bindable]
+			public var colors:ArrayList;
+			
+			protected function list1_changeHandler(event:IndexChangeEvent):void
+			{
+				dispatchEvent(new DesignColorPickerEvent(DesignColorPickerEvent.COLOR_CHANGE, true, false, {color:list1.selectedItem}));
+				list1.selectedIndex = -1;
+			}
+			
+		]]>
+	</fx:Script>
+	<!--<spark:TitledBorderBox left="5" right="5" top="20" bottom="5" paddingBottom="5" paddingLeft="5"
+	paddingRight="5" paddingTop="5"
+	title="{resourceManager.getString('languageResources','COLOR_PALETTE')}">-->
+	<s:VGroup gap="3" width="100%"  left="10" right="10" top="31" bottom="0" paddingTop="5" paddingBottom="5"  paddingRight="10">
+		<s:Label text="{resourceManager.getString('languageResources','COLOR_PALETTE')}"
+				 fontFamily="Arial" fontWeight="bold" fontSize="16" color="0xffffff"/>
+		<s:List itemRenderer="renderer.DesignColorListItemRenderer"
+				dataProvider="{colors}"
+				focusEnabled="false"
+				id="list1"
+				borderVisible="false"
+				change="list1_changeHandler(event)"
+				height="65" width="100%">
+			<s:layout>
+				<s:TileLayout horizontalGap="1" verticalGap="1" />
+			</s:layout>
+		</s:List>
+	</s:VGroup>
+	
+	
+	<!--</spark:TitledBorderBox>-->
+</s:BorderContainer>

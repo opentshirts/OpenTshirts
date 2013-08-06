@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer name="CoListItemRenderer"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				autoDrawBackground="false"
+				toolTip="{data.name}"
+				>
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<s:Group width="20" height="20">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="white" alpha="1"/>
+			</s:fill>
+		</s:Rect>
+		<s:Line xFrom="0" xTo="20" yFrom="20" yTo="0"
+				left="1" right="1" top="1" bottom="1">
+			<s:stroke>
+				<s:SolidColorStroke color="red" weight="3" />
+			</s:stroke>
+		</s:Line>
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="{data.hexa}" alpha="{data.alpha}"/>
+			</s:fill>
+		</s:Rect>
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:stroke>
+				<s:SolidColorStroke color="black" color.hovered="red" weight="2" />
+			</s:stroke>
+		</s:Rect>
+	</s:Group>
+	
+</s:ItemRenderer>

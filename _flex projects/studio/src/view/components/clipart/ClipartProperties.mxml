@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:spark="flex.utils.spark.*"
+				   backgroundColor="0x4D4C4D" cornerRadius="3"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)"
+				   dropShadowVisible="false"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin">
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ClipartEvent;
+			
+			import model.elements.cliparts.ClipartColorStateEnum;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var layers:ArrayCollection;
+			[Bindable]
+			public var canInvert:Boolean;
+			[Bindable]
+			public var colorState:uint;
+			[Bindable]
+			public var inverted:Boolean;
+			[Bindable]
+			public var fullColorEnabled:Boolean;
+			[Bindable]
+			public var duoColorEnabled:Boolean;
+			
+			
+			protected function chkInvert_changeHandler(event:Event):void
+			{
+				dispatchEvent(new ClipartEvent(ClipartEvent.INVERT));
+			}
+			
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom = 0;
+				this.left = 140;
+			}
+			
+			protected function color_state_changeHandler(event:Event):void
+			{
+				var colorState:uint = color_state.selectedValue as uint;
+				dispatchEvent(new ClipartEvent(ClipartEvent.COLOR_STATE_CHANGE, false, false, colorState));
+			}
+			public function showTintHint(value:Boolean):void	
+			{
+				label_tint.visible = value;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="color_state" change="color_state_changeHandler(event)" selectedValue="{colorState}"/>
+	</fx:Declarations>
+	<!--<spark:TitledBorderBox left="5" right="5" top="20" bottom="5" paddingBottom="5" paddingLeft="5"
+	paddingRight="5" paddingTop="5"
+	title="{resourceManager.getString('languageResources','CLIPART_PROPERTIES')}">-->
+	<s:VGroup left="5" right="5" top="31" bottom="5" gap="5" paddingBottom="5" paddingTop="5">
+		<s:Label text="{resourceManager.getString('languageResources','CLIPART_PROPERTIES')}"
+				 fontFamily="Arial" fontWeight="bold" fontSize="16" color="0xffffff"/>
+		<s:HGroup>
+			<s:List id="layersList" left="0" right="0" top="0" bottom="0" 
+					itemRenderer="renderer.LayerListItemRenderer"
+					allowMultipleSelection="true"
+					contentBackgroundAlpha="0"
+					rollOverColor="0x333333"
+					contentBackgroundColor="0x4f4f4f"
+					dataProvider="{layers}"/>
+			<s:VGroup>
+				<s:RadioButton enabled="{fullColorEnabled}" label="{resourceManager.getString('languageResources','FULL_COLOR')}" groupName="color_state" 
+							   value="{ClipartColorStateEnum.FULL_COLOR}" fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"/>
+				<s:RadioButton enabled="{duoColorEnabled}" label="{resourceManager.getString('languageResources','DUO_COLOR')}" groupName="color_state"
+							   value="{ClipartColorStateEnum.DUO_COLOR}" fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"/>
+				<s:RadioButton label="{resourceManager.getString('languageResources','ONE_COLOR')}" groupName="color_state"
+							   value="{ClipartColorStateEnum.ONE_COLOR}" selected="true" fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"/>
+				<s:CheckBox id="chkInvert" label="{resourceManager.getString('languageResources','INVERT')}" 
+							change="chkInvert_changeHandler(event)" visible="{canInvert}" selected="{inverted}"
+							fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"/>
+			</s:VGroup>
+		</s:HGroup>
+		<s:BorderContainer id="label_tint" visible="false" bottom="0" minWidth="0" minHeight="0" includeInLayout="false"
+						   backgroundAlpha="0.5" backgroundColor="#FF0000" borderColor="#FF0000"
+						   contentBackgroundAlpha="0.0" contentBackgroundColor="#FFFFFF">
+			<s:filters>
+				<s:GlowFilter color="0xFF0000" />
+			</s:filters>
+			<s:Label paddingTop="6"  paddingLeft="6" paddingRight="6" paddingBottom="6"
+					 text="{resourceManager.getString('languageResources','SELECT_LAYERS_TO_TINT')}" 
+					 fontFamily="Arial" fontWeight="bold" fontSize="16" color="0xffffff"/>
+		</s:BorderContainer>
+	</s:VGroup>
+	
+	
+	<!--</spark:TitledBorderBox>-->
+</s:BorderContainer>

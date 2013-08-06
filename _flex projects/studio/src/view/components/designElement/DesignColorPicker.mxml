@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ColorPicker xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				skin="skins.DesignColorPickerSkin"
+				initialize="colorpicker1_initializeHandler(event)"
+				showTextField="true"
+				editable="false"
+				labelField="name" 
+				colorField="hexa" 
+				focusEnabled="false"
+				swatchPanelStyleName="myCustomSwatchPanelStyleName">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import view.DesignColorListMediator;
+			
+			protected function colorpicker1_initializeHandler(event:FlexEvent):void
+			{
+				this.dataProvider = DesignColorListMediator.colors;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.myCustomSwatchPanelStyleName {
+			/*backgroundColor: haloBlue;
+			highlightColor: haloBlue;*/
+			textFieldWidth: 127;
+			swatchHeight: 20;
+			swatchWidth: 20;
+			horizontalGap: 2;
+			verticalGap: 2;
+		}
+	</fx:Style>
+</mx:ColorPicker>

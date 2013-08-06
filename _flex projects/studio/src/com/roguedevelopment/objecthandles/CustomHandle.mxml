@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="com.roguedevelopment.objecthandles.IHandle"
+		 mouseChildren="false"
+		 buttonMode="true"
+		 width="32"
+		 height="32"
+		 >
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			private var _descriptor:HandleDescription;
+			private var _targetModel:Object;
+			
+			public function get handleDescriptor():HandleDescription
+			{
+				return _descriptor;
+			}
+			public function set handleDescriptor(value:HandleDescription):void
+			{
+				if(ico_rotate.visible && ico_resize.visible && ico_remove.visible) {
+					if( value.role == HandleRoles.ROTATE) {
+						ico_rotate.visible = true;
+						ico_resize.visible = false;
+						ico_remove.visible = false;
+					} else if ( value.role == HandleRoles.REMOVE){
+						ico_rotate.visible = false;
+						ico_resize.visible = false;
+						ico_remove.visible = true;
+					} else {
+						ico_rotate.visible = false;
+						ico_remove.visible = false;
+						ico_resize.visible = true;
+						if(value.role == HandleRoles.RESIZE_DOWN || value.role == HandleRoles.RESIZE_UP) {
+							ico_resize.rotation = 90;
+						} else if (value.role == (HandleRoles.RESIZE_LEFT + HandleRoles.RESIZE_UP) || value.role == (HandleRoles.RESIZE_DOWN + HandleRoles.RESIZE_RIGHT)) {
+							ico_resize.rotation = 45;
+						} else  if (value.role == (HandleRoles.RESIZE_RIGHT + HandleRoles.RESIZE_UP) || value.role == (HandleRoles.RESIZE_DOWN + HandleRoles.RESIZE_LEFT)) {
+							ico_resize.rotation = -45;
+						}
+					}
+				}
+				_descriptor = value;
+			}
+			public function get targetModel():Object
+			{
+				return _targetModel;
+			}
+			public function set targetModel(value:Object):void
+			{
+				_targetModel = value;
+			}
+			public function redraw() : void
+			{
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group id="ico_rotate" >
+		<s:Image x="-8" y="-8" horizontalAlign="center" smooth="true" smoothingQuality="high"
+				 source="@Embed('assets/handle_rotate.png')" verticalAlign="middle"/>
+	</s:Group>
+	<s:Group id="ico_resize" >
+	<s:Image x="-9" y="-4" horizontalAlign="center" smooth="true" smoothingQuality="high"
+			 source="@Embed('assets/handle_resize.png')" verticalAlign="middle"/>
+	</s:Group>
+	<s:Group id="ico_remove" >
+		<s:Image x="-8" y="-8" horizontalAlign="center" smooth="true" smoothingQuality="high"
+				 source="@Embed('assets/handle_remove.png')" verticalAlign="middle"/>
+	</s:Group>
+	<!--<assets:rotate id="ico_rotate" x="-16" y="-16"/>
+	<assets:handle id="ico_resize" x="-16" y="-16"/>-->
+	
+</s:Group>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:components="view.components.*"
+				autoDrawBackground="false"
+				width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.FilterEvent;
+			protected function chkVisible_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new FilterEvent(FilterEvent.VISIBILITY_CHANGE, true, false, {uid: data.uid, visible:chkVisible.selected} ));
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	<s:HGroup width="100%" verticalAlign="middle" >
+		<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='otlineTick')"/>
+		<mx:Canvas borderSkin="@Embed(source='assets/skinfilesNew.swf',symbol='outlineTickBack')" 
+				   width="100%" height="100%">
+			
+			<s:HGroup verticalAlign="middle"  width="100%" height="100%" paddingLeft="10" paddingRight="10">
+				<s:Label text="{resourceManager.getString('languageResources',data.name) + data.index}"
+						 width="170"
+						 fontFamily="Arial"
+						 fontWeight="bold"
+						 fontSize="18"
+						 maxDisplayedLines="1"
+						 showTruncationTip="true" /><!--text="{data.name}"   textDecoration.hovered="underline"-->
+				<s:Spacer width="100%"/>
+				<s:CheckBox id="chkVisible" 
+							selected="{data.visible}"
+							skinClass="skins.CheckboxSkin"
+							chromeColor="0xffffff"
+							click="chkVisible_clickHandler(event)" /><!--label="{resourceManager.getString('languageResources','VISIBLE')}" -->
+			</s:HGroup>
+		</mx:Canvas>
+	</s:HGroup>
+	
+	
+</s:ItemRenderer>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow  xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:mx="library://ns.adobe.com/flex/mx"
+						   xmlns:components="view.components.*"
+						   width="800" height="500"
+						   title="{resourceManager.getString('languageResources','CLIPART')}"
+						   skinClass="flex.utils.spark.resize.ResizableTitleWindowSkin"
+						   close="titlewindow1_closeHandler(event)"
+						   >
+	
+	
+	<!--skinClass="flex.utils.spark.resize.ResizableDraggableTitleWindowSkin"-->
+	<fx:Script>
+		<![CDATA[
+			import flex.utils.spark.resize.ResizableDraggableTitleWindowSkin;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.supportClasses.Skin;
+			import spark.events.IndexChangeEvent;
+			
+			public static const NAME:String       = 'ClipartsList';
+			public static const ADD_CLIPART:String	  = NAME + 'ADD_CLIPART';
+			[Bindable]public var cliparts:ArrayCollection;
+			[Bindable]public var categories:ArrayCollection;
+
+
+			protected function list_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent(new Event(ADD_CLIPART));
+			}
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				PopUpManager.removePopUp(event.currentTarget as IFlexDisplayObject);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:TextInput x="0" y="0" right="10" top="10" width="45%" text="{resourceManager.getString('languageResources','SEARCH')}..."/>
+	<s:DropDownList x="0" y="28" left="10" top="10" width="45%" dataProvider="{categories}"
+					enabled="true" labelField="description"></s:DropDownList>
+
+	<s:List id="list" left="10" right="10" top="45" bottom="10" borderColor="#2F78E5"
+			change="list_changeHandler(event)" dataProvider="{cliparts}" enabled="true"
+			itemRenderer="renderer.ClipartListItemRenderer">
+		<s:layout>
+			<s:TileLayout horizontalGap="2" verticalGap="2" />
+		</s:layout>
+	</s:List>
+</s:TitleWindow >

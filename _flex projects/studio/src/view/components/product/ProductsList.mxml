@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:components="view.components.*"
+			   width="800" height="500" 
+			   title="{resourceManager.getString('languageResources','PRODUCTS')}"
+			   close="titlewindow1_closeHandler(event)"
+			   skinClass="flex.utils.spark.resize.ResizableTitleWindowSkin">
+<!--	skinClass="flex.utils.spark.resize.ResizableDraggableTitleWindowSkin"-->
+	<s:layout>
+		<s:BasicLayout>
+			
+		</s:BasicLayout>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			
+			public static const NAME:String       = 'ProductList';
+			public static const CHANGE_PRODUCT:String	  = NAME + 'CHANGE_PRODUCT';
+			[Bindable]public var products:ArrayCollection;
+			[Bindable]public var categories:ArrayCollection;
+
+			protected function list_changeHandler(event:IndexChangeEvent):void
+			{
+				this.dispatchEvent(new Event(CHANGE_PRODUCT));
+			}
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				PopUpManager.removePopUp(event.currentTarget as IFlexDisplayObject);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:TextInput right="10" top="10" width="45%" text="{resourceManager.getString('languageResources','SEARCH')}..."/>
+	<s:DropDownList x="0" y="28" left="10" top="10" width="45%" dataProvider="{categories}"
+					enabled="true" labelField="description"></s:DropDownList>
+
+	<s:List id="list" left="10" right="10" top="45" bottom="10" borderColor="#2F78E5"
+			change="list_changeHandler(event)" dataProvider="{products}" enabled="true"
+			itemRenderer="renderer.ProductListItemRenderer">
+		<s:layout>
+			<s:TileLayout horizontalGap="2" verticalGap="2" />
+		</s:layout>
+	</s:List>
+</s:TitleWindow>

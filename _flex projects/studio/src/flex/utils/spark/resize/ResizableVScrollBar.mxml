@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VScrollBar xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			override public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
+				var dy:Number = 0;
+				if (visible) {
+					// only add extra space if the scrollbar height matches the parent height
+					var parentH:Number = (parent ? parent.height : height);
+					if (height >= parentH) {
+						dy = width;
+					}
+				}
+				super.setLayoutBoundsSize(width, height - dy, postLayoutTransform);
+			}
+		]]>
+	</fx:Script>
+
+</s:VScrollBar>

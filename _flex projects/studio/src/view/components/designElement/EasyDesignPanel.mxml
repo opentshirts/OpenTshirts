@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="239" height="390"
+		 skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+		 backgroundColor="0x4D4C4D"
+		 cornerRadius="3"
+		 dropShadowVisible="false" creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import events.ClipartEvent;
+			import events.ProductEvent;
+			import events.TextEvent;
+			
+			import mx.events.FlexEvent;
+			
+			protected function addTextBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.TextEvent(events.TextEvent.TEXT_ADD));
+				
+			}
+			
+			protected function addClipartBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.ClipartEvent(events.ClipartEvent.LOAD_CLIPART_LIST));
+				
+			}
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.left = 0;
+				this.top = 70;
+			}
+			
+			protected function desgnIdeaBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.ProductEvent(events.ProductEvent.LOAD_EXPORT_IMAGE));
+				
+			}
+			
+			protected function openCatlog_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.ProductEvent(events.ProductEvent.LOAD_PRODUCT_LIST));
+				
+			}
+			
+			protected function saveDesBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new events.ProductEvent(events.ProductEvent.SAVE_DESIGN));
+				
+			}
+			
+			protected function uploadBtn_clickHandler(event:MouseEvent):void
+			{
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup gap="6" width="100%" height="100%" left="10" right="10" top="31">
+		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center" gap="10">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='colorBucket')" 
+						  width="38" height="49" maintainAspectRatio="false"/>	
+			</s:Group>
+			<s:HGroup width="170" height="56" verticalAlign="middle" horizontalAlign="center">	
+				<!--<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='designStudioTitle')" 
+						  width="165" height="46" maintainAspectRatio="false"/>-->
+				<s:VGroup >
+					<s:Label text="DESIGN STUDIO" fontFamily="Arial" 
+							   fontSize="22"  fontWeight="bold" color="0xffffff"/>
+					<s:Label text="Easy design panel" fontFamily="Arial" 
+							   fontSize="21"  color="0xffffff"/>
+				</s:VGroup>
+				
+			</s:HGroup>
+		</s:HGroup>
+		<s:HGroup width="100%" height="35">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textSymbol')" 
+						  width="32" height="32" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="addTextBtn" height="33" skinClass="skins.DesignPanelButtonSkin"
+					  label="Add Text"  fontSize="18" fontWeight="bold" fontFamily="Arial" useHandCursor="true" 
+					  buttonMode="true" click="addTextBtn_clickHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="35">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='clipSymbol')" 
+						  width="32" height="32" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="addClipartBtn" height="33" skinClass="skins.DesignPanelButtonSkin"
+					  label="Add Clipart"  fontSize="18" fontWeight="bold" fontFamily="Arial" 
+					  useHandCursor="true" buttonMode="true" click="addClipartBtn_clickHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="35">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='designSymbol')" 
+						  width="32" height="32" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="desgnIdeaBtn" height="33" skinClass="skins.DesignPanelButtonSkin"
+					  label="Design Ideas" fontSize="18" fontWeight="bold" fontFamily="Arial" useHandCursor="true" 
+					  buttonMode="true" click="desgnIdeaBtn_clickHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="35">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='bookSymbol')" 
+						  width="40" height="39" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="openCatlog" height="33" skinClass="skins.DesignPanelButtonSkin" 
+					  label="Open Catalog" fontSize="18" fontWeight="bold" fontFamily="Arial" useHandCursor="true" 
+					  buttonMode="true" click="openCatlog_clickHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="35">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='saveDesSymbol')" 
+						  width="32" height="32" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="saveDesBtn" height="33" skinClass="skins.DesignPanelButtonSkin"
+					  label="Save Design" fontSize="18" fontWeight="bold" fontFamily="Arial" useHandCursor="true" 
+					  buttonMode="true" click="saveDesBtn_clickHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="5" verticalAlign="middle" horizontalAlign="center">
+			<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='hDivider')" 
+					  width="215" height="3" maintainAspectRatio="false"/>
+		</s:HGroup>	
+		<s:HGroup width="100%" height="60">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='uploadIcon')" 
+						  width="41" height="52" maintainAspectRatio="false"/>
+			</s:Group>
+			<s:Button width="170" id="uploadBtn" height="60" skinClass="skins.DesignPanelButtonSkin"
+					  label="Upload Your Image or Art" fontSize="18" fontWeight="bold" fontFamily="Arial" 
+					  useHandCursor="true" buttonMode="true" click="uploadBtn_clickHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:BorderContainer>

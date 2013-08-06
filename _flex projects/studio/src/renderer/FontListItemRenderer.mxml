@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				toolTip="{data.name}">
+	
+	<s:HGroup horizontalAlign="left" verticalAlign="middle">
+		<s:BitmapImage 
+			scaleMode="letterbox" height="30" width="250"
+			source="{data.preview_src}" smooth="true"/>
+	</s:HGroup>
+</s:ItemRenderer>

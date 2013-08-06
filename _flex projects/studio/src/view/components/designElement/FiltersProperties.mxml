@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:spark="flex.utils.spark.*"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   dropShadowVisible="false"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)" xmlns:components="view.components.*" xmlns:designElement="view.components.designElement.*">
+	<s:layout>
+		<s:HorizontalLayout paddingBottom="10"  paddingTop="20"/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import events.FilterEvent;
+			
+			import model.elements.filters.FilterNameEnum;
+			import model.elements.filters.FilterVO;
+			import model.elements.filters.OutlineVO;
+			import model.elements.filters.ShadowVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.events.ColorPickerEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			private var selectedFilter:FilterVO;
+			[Bindable]
+			public var colors:ArrayList;
+			[Bindable]
+			private var _filterArray:ArrayCollection;
+			
+			[Bindable]
+			private var shadow:ShadowVO;
+			[Bindable]
+			private var outline:OutlineVO;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom = 0
+				this.right = 340;
+			}
+			
+			protected function filtersList_changeHandler(event:IndexChangeEvent):void
+			{
+				outline = null;
+				shadow = null;
+				
+				switch(FilterVO(filtersList.selectedItem).name)
+				{
+					case FilterNameEnum.OUTLINE:
+						outline = filtersList.selectedItem
+						this.currentState = "outline";
+						break;
+					case FilterNameEnum.SHADOW:
+						shadow = filtersList.selectedItem
+						this.currentState = "shadow";
+						break;
+				}
+			}
+			
+			
+			
+			//outline handlers
+			protected function slOutlineThickness_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.OUTLINE_THICKNESS_CHANGING, false, false, {uid: outline.uid, thickness:slOutlineThickness.value}));
+			}
+			protected function slOutlineThickness_changeEndHandler(event:FlexEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.OUTLINE_THICKNESS_CHANGE, false, false, {uid: outline.uid, thickness:slOutlineThickness.value}));
+			}
+			
+			protected function outlineColorPicker_changeHandler(event:ColorPickerEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.OUTLINE_COLOR_CHANGE, false, false, {uid: outline.uid, color:outlineColorPicker.selectedItem}));
+			}
+			
+			///shadow handlers
+			protected function slShadowAngle_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_ANGLE_CHANGING, false, false, {uid: shadow.uid, angle:slShadowAngle.value}));
+			}
+			
+			protected function slShadowDistance_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_DISTANCE_CHANGING, false, false, {uid: shadow.uid, distance:slShadowDistance.value}));
+			}
+			
+			protected function slShadowThickness_changeHandler(event:Event):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_THICKNESS_CHANGING, false, false, {uid: shadow.uid, thickness:slShadowThickness.value}));
+			}
+			protected function shadowColorPicker_changeHandler(event:ColorPickerEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_COLOR_CHANGE, false, false, {uid: shadow.uid, color:shadowColorPicker.selectedItem}));
+			}
+			
+			protected function slShadowThickness_changeEndHandler(event:FlexEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_THICKNESS_CHANGE, false, false, {uid: shadow.uid, thickness:slShadowThickness.value}));
+			}
+			
+			protected function slShadowDistance_changeEndHandler(event:FlexEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_DISTANCE_CHANGE, false, false, {uid: shadow.uid, distance:slShadowDistance.value}));
+			}
+			
+			protected function slShadowAngle_changeEndHandler(event:FlexEvent):void
+			{
+				this.dispatchEvent(new FilterEvent(FilterEvent.SHADOW_ANGLE_CHANGE, false, false, {uid: shadow.uid, angle:slShadowAngle.value}));
+			}
+			
+			
+			public function get filterArray():ArrayCollection
+			{
+				return _filterArray;
+			}
+			
+			public function set filterArray(value:ArrayCollection):void
+			{
+				this.currentState = "normal";
+				filtersList.selectedIndex = -1;
+				_filterArray = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="outline" />
+		<s:State name="shadow" />
+	</s:states>
+	<!--<spark:TitledBorderBox title="{resourceManager.getString('languageResources','FILTERS')}">
+	<spark:layout>
+	<s:VerticalLayout paddingBottom="10" paddingLeft="10"
+	paddingRight="10" paddingTop="10"/>
+	</spark:layout>-->
+	<s:VGroup top="31" width="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
+		<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center" gap="10">
+			<s:Group width="41">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='bigTextSymbol')" 
+						  width="35" height="38" maintainAspectRatio="false"/>	
+			</s:Group>
+			<s:HGroup width="100%" height="56" verticalAlign="middle" horizontalAlign="center">	
+				<s:VGroup >
+					<s:Label text="{resourceManager.getString('languageResources','SET_TEXT_OUTLINES')}" fontFamily="Arial" 
+							 fontSize="22"  fontWeight="bold" color="0xffffff"/>
+					<s:Label text="{resourceManager.getString('languageResources','CLICK_ENABLE_OUTLINES')}" fontFamily="Arial" 
+							 fontSize="21"  color="0xffffff"/>
+				</s:VGroup>
+				<!--<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='outlineTextTitle')" 
+				width="222" height="42" maintainAspectRatio="false"/>-->
+			</s:HGroup>
+		</s:HGroup>
+		<s:List id="filtersList" width="100%" change="filtersList_changeHandler(event)"
+				itemRenderer="renderer.FilterListItemRenderer"
+				dataProvider="{_filterArray}"
+				borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="5" paddingRight="5" requestedRowCount="3"
+								  paddingBottom="5" paddingTop="5"/>
+			</s:layout>
+		</s:List>
+		<s:Group width="100%">
+			<!-- NO FILTER SELECTED -->
+			<s:Group visible="false" visible.normal="true" width="100%"
+					 left="5" right="5" top="5" bottom="5">
+				<s:Label fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff" text="{resourceManager.getString('languageResources','SELECT_FILTER')}"/>
+			</s:Group>
+			
+			<!-- >> Outline Properties -->
+			<s:Group visible="false" visible.outline="true"
+					 left="0" right="0" top="5" bottom="5" width="100%">
+				<!--<s:layout>
+				<s:TileLayout requestedColumnCount="2" verticalAlign="middle"
+				horizontalAlign="right" horizontalGap="5"/>
+				</s:layout>-->
+				<s:VGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textSpaceSymbol')" />
+						<s:Label text="{resourceManager.getString('languageResources','THICKNESS')}" 
+								 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+					</s:HGroup>
+					<s:Group width="100%">
+						<s:layout>
+							<s:HorizontalLayout verticalAlign="middle"/>
+						</s:layout>
+						<s:Spacer width="30"/>
+						<s:HSlider id="slOutlineThickness" width="100%" change="slOutlineThickness_changeHandler(event)"
+								   changeEnd="slOutlineThickness_changeEndHandler(event)"
+								   enabled="{outline.visible}" focusEnabled="false" maximum="20" minimum="0"
+								   value="{outline.thickness}"
+								   liveDragging="true" skinClass="skins.TextSpacingSliderSkin"/>
+					</s:Group>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='textColorSymbol')" />
+						<s:Label text="{resourceManager.getString('languageResources','FILTER_COLOR')}"  
+								 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+						<designElement:DesignColorPicker id="outlineColorPicker" 
+														 dataProvider="{colors}"
+														 enabled="{outline.visible}"
+														 selectedColor="{outline.color.hexa}" 
+														 change="outlineColorPicker_changeHandler(event)"
+														 />
+					</s:HGroup>
+				</s:VGroup>
+			</s:Group>
+			<!-- << Outline Properties -->
+			
+			<!-- >> Shadow Properties -->
+			<s:VGroup visible="false"
+					  visible.shadow="true" 
+					  width="100%"
+					  left="5" right="0" top="0" bottom="5">
+				<s:HGroup width="100%">
+					<s:Label text="{resourceManager.getString('languageResources','COLOR')}"
+							 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+					<s:Spacer width="100%"/>
+					<designElement:DesignColorPicker id="shadowColorPicker" 
+													 dataProvider="{colors}"
+													 enabled="{shadow.visible}"
+													 selectedColor="{shadow.color.hexa}" 
+													 change="shadowColorPicker_changeHandler(event)"/>
+				</s:HGroup>
+				<s:HGroup width="100%">
+					<s:Label text="{resourceManager.getString('languageResources','THICKNESS')}"
+							 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+					<s:Spacer width="100%"/>
+					<s:HSlider focusEnabled="false" id="slShadowThickness" maximum="20" minimum="0"
+							   width="170"
+							   value="{shadow.thickness}"
+							   enabled="{shadow.visible}"
+							   change="slShadowThickness_changeHandler(event)"
+							   changeEnd="slShadowThickness_changeEndHandler(event)"
+							   skinClass="skins.TextSpacingSliderSkin"/>
+				</s:HGroup>
+				<s:HGroup width="100%">
+					<s:Label text="{resourceManager.getString('languageResources','DISTANCE')}"
+							 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+					<s:Spacer width="100%"/>
+					<s:HSlider focusEnabled="false" id="slShadowDistance" maximum="40" minimum="0"
+							   width="170"
+							   value="{shadow.distance}"
+							   enabled="{shadow.visible}"
+							   change="slShadowDistance_changeHandler(event)"
+							   changeEnd="slShadowDistance_changeEndHandler(event)"
+							   skinClass="skins.TextSpacingSliderSkin"/>
+				</s:HGroup>
+				
+				<s:HGroup width="100%">
+					<s:Label text="{resourceManager.getString('languageResources','ANGLE')}"
+							 fontFamily="Arial" fontSize="18" fontWeight="bold" color="0xffffff"/>
+					<s:Spacer width="100%"/>
+					<s:HSlider focusEnabled="false" id="slShadowAngle" maximum="360" minimum="0"
+							   width="170"
+							   value="{shadow.angle}"
+							   enabled="{shadow.visible}"
+							   change="slShadowAngle_changeHandler(event)"
+							   changeEnd="slShadowAngle_changeEndHandler(event)"
+							   skinClass="skins.TextSpacingSliderSkin"/>
+				</s:HGroup>
+				
+			</s:VGroup>
+			<!-- << Shadow Properties -->
+		</s:Group>
+	</s:VGroup>
+	<!--</spark:TitledBorderBox>-->
+</s:BorderContainer>

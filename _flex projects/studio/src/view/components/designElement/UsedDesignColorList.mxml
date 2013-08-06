@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   width="234"
+				   dropShadowVisible="false"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.DesignColorPickerEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.bottom =303;
+				this.right = 97;
+			}
+			[Bindable]
+			public var colors:ArrayCollection;
+			
+			protected function list1_changeHandler(event:IndexChangeEvent):void
+			{
+				dispatchEvent(new DesignColorPickerEvent(DesignColorPickerEvent.COLOR_CHANGE, true, false, {color:list1.selectedItem}));
+				list1.selectedIndex = -1;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" left="10" right="10" top="31" verticalAlign="middle" paddingBottom="10" paddingTop="10">
+		<s:Label text="{resourceManager.getString('languageResources','COLORS_USED')}:{colors.length}" 
+				 fontFamily="Arial" fontWeight="bold" fontSize="16" color="0xffffff"/>
+		<s:List itemRenderer="renderer.DesignColorListItemRenderer"
+				dataProvider="{colors}"
+				borderVisible="false"
+				focusEnabled="false"
+				id="list1"
+				change="list1_changeHandler(event)"
+				width="100%" height="40" >
+			<s:layout>
+				<s:TileLayout horizontalGap="1" verticalGap="1" />
+			</s:layout>
+		</s:List>
+		<s:Label text="{resourceManager.getString('languageResources','COLOR_USED_HELP')}" width="100%"
+				 fontFamily="Arial" fontWeight="bold" fontSize="16" color="0xffffff"/>
+	</s:VGroup>
+</s:BorderContainer>

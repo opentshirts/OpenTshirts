@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer name="LayerListItemRenderer"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				autoDrawBackground="true"
+				contentBackgroundColor="0x4f4f4f"
+				contentBackgroundAlpha="0"
+				rollOverColor="0x333333"
+				depth="0" depth.selected="1"
+				toolTip="{data.name}"
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				xmlns:components="view.components.*" xmlns:designElement="view.components.designElement.*">
+	<s:layout>
+		<s:HorizontalLayout />
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import events.DesignColorPickerEvent;
+			
+			import mx.events.ColorPickerEvent;
+			import mx.events.FlexEvent;
+			
+			
+			protected function cp_changeHandler(event:ColorPickerEvent):void
+			{
+				this.dispatchEvent(new DesignColorPickerEvent(DesignColorPickerEvent.COLOR_CHANGE, true, false, {layerIndex: data.index, color:cp.selectedItem}));
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<s:HGroup verticalAlign="middle">
+		<designElement:DesignColorPicker selectedColor="{data.actualColor.hexa}" id="cp" change="cp_changeHandler(event)"/>
+		
+		<s:Label text="{data.name}"
+				 textDecoration.hovered="underline"
+				 width="100%"
+				 fontFamily="Arial" fontWeight="bold" fontSize="14" color="0xffffff"
+				 maxDisplayedLines="1"
+				 showTruncationTip="true" />
+	</s:HGroup>
+</s:ItemRenderer>

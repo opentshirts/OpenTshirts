@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer name="CoListItemRenderer"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				autoDrawBackground="false"
+				toolTip="{data.name}"
+				width="20"
+				height="20"
+				creationComplete="itemrenderer1_creationCompleteHandler(event)"
+				dataChange="itemrenderer1_dataChangeHandler(event)">
+	<s:layout>
+		<s:BasicLayout>
+			
+		</s:BasicLayout>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				drawColorizedRect();
+			}
+			private function drawColorizedRect():void
+			{
+				var columnW:Number = colorRect.width/data.hexas.length;
+				var columnH:Number = colorRect.height;
+				colorRect.graphics.clear();
+				for(var i:uint=0; i<data.hexas.length ; i++)
+				{
+					colorRect.graphics.beginFill(data.hexas[i]);
+					colorRect.graphics.drawRect(i*columnW,0,columnW,columnH);
+					colorRect.graphics.endFill();
+				}
+			}
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				drawColorizedRect()
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+	</s:states>
+	
+	<s:Group id="colorRect" left="2" right="2" top="2" bottom="2">
+	</s:Group>
+	<s:Group width="100%" height="100%">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:stroke>
+				<s:SolidColorStroke color="black" color.hovered="red" weight="2" />
+			</s:stroke>
+		</s:Rect>
+	</s:Group>
+	
+</s:ItemRenderer>

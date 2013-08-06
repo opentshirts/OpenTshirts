@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HScrollBar xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			override public function setLayoutBoundsSize(width:Number, height:Number, postLayoutTransform:Boolean = true):void {
+				var dx:Number = 0;
+				if (visible) {
+					// only add extra padding if the scrollbar width matches the parent width
+					var parentW:Number = (parent ? parent.width : width);
+					if (width >= parentW) {
+						dx = height;
+					}
+				}
+				super.setLayoutBoundsSize(width - dx, height, postLayoutTransform);
+			}
+		]]>
+	</fx:Script>
+
+</s:HScrollBar>

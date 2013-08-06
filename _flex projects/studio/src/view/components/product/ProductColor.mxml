@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" width="300"
+				   skinClass="flex.utils.spark.resize.DraggableBorderContainerSkin"
+				   backgroundColor="0x4D4C4D"
+				   cornerRadius="3"
+				   dropShadowVisible="false"
+				   creationComplete="bordercontainer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import events.ProductEvent;
+			
+			import model.products.vo.ProductColorVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			[Bindable]
+			public var colors:ArrayCollection;
+			
+			protected function bordercontainer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.right = 0;
+				this.bottom = 0;
+				
+			}
+			protected function color_list_changeHandler(event:IndexChangeEvent):void
+			{
+				dispatchEvent(new ProductEvent(ProductEvent.COLOR_CHANGE, true, false, ProductColorVO(color_list.selectedItem).id));
+				color_list.selectedIndex = -1;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup gap="6" width="100%"  left="10" right="10" top="31" bottom="0" paddingTop="10" paddingBottom="5"  paddingRight="10">
+		<s:HGroup width="100%" verticalAlign="middle"  gap="10">
+			<s:Group width="45">
+				<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='prodColorSymbol')" 
+						  width="43" height="43" maintainAspectRatio="false"/>	
+			</s:Group>
+			<s:HGroup width="100%" height="42" verticalAlign="middle" horizontalAlign="center">	
+				<s:VGroup >
+					<s:Label text="PRODUCT COLORS" fontFamily="Arial" 
+							 fontSize="22"  fontWeight="bold" color="0xffffff"/>
+					<s:Label text="Left click to edit color(s) " fontFamily="Arial" 
+							 fontSize="20"  color="0xffffff"/>
+				</s:VGroup>
+				<!--<mx:Image source="@Embed(source='assets/skinfilesNew.swf',symbol='prodColorTitle')" 
+						  width="218" height="42" maintainAspectRatio="false"/>-->
+			</s:HGroup>
+		</s:HGroup>
+		<!--<s:Label  text="{resourceManager.getString('languageResources','PRODUCT_COLORS')}" color="0xffffff" fontFamily="Arial" 
+				 fontSize="18" fontWeight="bold"/>
+		<s:Label text="{resourceManager.getString('languageResources','PRODUCT_PROPERTIES_HELP2')}" color="0xffffff" fontFamily="Arial" 
+				 fontSize="18" fontWeight="bold"/>-->
+		<s:List id="color_list" width="100%" height="70"  borderVisible="true"
+				dataProvider="{colors}" change="color_list_changeHandler(event)" 
+				itemRenderer="renderer.ProductColorListItemRenderer">
+			<s:layout>
+				<s:TileLayout horizontalGap="1" verticalGap="1" />
+			</s:layout>
+		</s:List>
+	</s:VGroup>
+</s:BorderContainer>

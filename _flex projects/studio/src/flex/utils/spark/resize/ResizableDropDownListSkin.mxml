@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+	 A skin class for the Spark DropDownList component that supports resizing
+	 the popup list.
+
+	 <p>In a custom skin class that uses transitions, set the
+	 <code>itemDestructionPolicy</code> property to <code>none</code>
+	 for the PopUpAnchor defined by the popUp property.</p>
+
+	 @see spark.components.DropDownList
+	 @see spark.skins.spark.DropDownListButtonSkin
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+	alpha.disabled=".5">
+
+	<!-- host component -->
+	<fx:Metadata>
+		<![CDATA[ 
+        /** 
+         * @copy spark.skins.spark.ApplicationSkin#hostComponent
+         */
+        [HostComponent("spark.components.DropDownList")]
+    ]]>
+	</fx:Metadata>
+
+	<fx:Script fb:purpose="styling">
+		<![CDATA[
+			/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+			static private const contentFill:Array = ["bgFill"];
+
+			/**
+			 * @private
+			 */
+			override public function get contentItems():Array {
+				return contentFill
+			}
+			;
+
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+				if (getStyle("borderVisible") == false) {
+					if (border)
+						border.visible = false;
+					if (background) {
+						background.left = background.top = background.right = background.bottom = 0;
+					}
+					if (scroller)
+						scroller.minViewportInset = 0;
+				} else {
+					if (border)
+						border.visible = true;
+					if (background) {
+						background.left = background.top = background.right = background.bottom = 1;
+					}
+					if (scroller)
+						scroller.minViewportInset = 1;
+				}
+
+				if (dropShadow)
+					dropShadow.visible = getStyle("dropShadowVisible");
+
+				openButton.setStyle("cornerRadius", getStyle("cornerRadius"));
+
+				if (borderStroke) {
+					borderStroke.color = getStyle("borderColor");
+					borderStroke.alpha = getStyle("borderAlpha");
+				}
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+		]]>
+	</fx:Script>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+
+			// When the drop down list is resized - save the values for when the popUp is next created
+			private var dropDownWidth:Number, dropDownHeight:Number;
+
+			[Bindable]
+			private var matchAnchorWidth:Boolean = true;
+
+			private function dropDownInit(event:FlexEvent):void {
+				// listen for when resize events happen so we can save the drop down size
+				dropDown.addEventListener(ResizeManager.RESIZE_END, resizeFinished, false, 0, true);
+
+				if (!isNaN(dropDownWidth)) {
+					// have to turn this off since the width no-longer matches the anchor width
+					matchAnchorWidth = false;
+					// set the explicit width/height to what it was last resized to
+					dropDown.explicitWidth = dropDownWidth;
+					dropDown.explicitHeight = dropDownHeight;
+				}
+			}
+
+			private function resizeFinished(event:ResizeEvent):void {
+				// have to save the explicit width/height for when the popup is next opened
+				dropDownWidth = dropDown.width;
+				dropDownHeight = dropDown.height;
+			}
+
+			private function exitStateOpen(event:Event):void {
+				dropDown.removeEventListener(ResizeManager.RESIZE_END, resizeFinished, false);
+			}
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="normal"/>
+		<s:State exitState="exitStateOpen(event)"
+			name="open"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<!---
+		 The PopUpAnchor control that opens the drop-down list.
+
+		 <p>In a custom skin class that uses transitions, set the
+		 <code>itemDestructionPolicy</code> property to <code>none</code>.</p>
+	-->
+	<s:PopUpAnchor id="popUp"
+		includeIn="open"
+		bottom="0"
+		left="0"
+		right="0"
+		top="0"
+		displayPopUp.normal="false"
+		displayPopUp.open="true"
+		itemDestructionPolicy="auto"
+		popUpPosition="below"
+		popUpWidthMatchesAnchorWidth="{matchAnchorWidth}">
+
+		<!---
+			 This includes borders, background colors, scrollers, and filters.
+			 @copy spark.components.supportClasses.DropDownListBase#dropDown
+		-->
+		<s:Group id="dropDown"
+			height="134"
+			minHeight="40"
+			minWidth="40"
+			initialize="dropDownInit(event)">
+
+			<!--- @private -->
+			<s:RectangularDropShadow id="dropShadow"
+				bottom="0"
+				color="#000000"
+				left="0"
+				right="0"
+				top="0"
+				alpha="0.45"
+				angle="90"
+				blurX="20"
+				blurY="20"
+				distance="7"/>
+
+			<!--- @private -->
+			<s:Rect id="border"
+				bottom="0"
+				left="0"
+				right="0"
+				top="0">
+				<s:stroke>
+					<!--- border stroke @private -->
+					<s:SolidColorStroke id="borderStroke"
+						weight="1"/>
+				</s:stroke>
+			</s:Rect>
+
+			<!-- fill -->
+			<!--- Defines the appearance of drop-down list's background fill. -->
+			<s:Rect id="background"
+				bottom="1"
+				left="1"
+				right="1"
+				top="1">
+				<s:fill>
+					<s:SolidColor id="bgFill"
+						color="0xFFFFFF"/>
+				</s:fill>
+			</s:Rect>
+
+			<!--- @private -->
+			<s:Scroller id="scroller"
+				bottom="0"
+				left="0"
+				right="0"
+				top="0"
+				hasFocusableChildren="false"
+				minViewportInset="1"
+				skinClass="flex.utils.spark.resize.ResizableScrollerSkin">
+				<!--- @copy spark.components.SkinnableDataContainer#dataGroup-->
+				<s:DataGroup id="dataGroup"
+					itemRenderer="spark.skins.spark.DefaultItemRenderer">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="contentJustify"
+							gap="0"/>
+					</s:layout>
+				</s:DataGroup>
+			</s:Scroller>
+		</s:Group>
+	</s:PopUpAnchor>
+
+	<!---  The default skin is DropDownListButtonSkin.
+		 @copy spark.components.supportClasses.DropDownListBase#openButton
+		 @see spark.skins.spark.DropDownListButtonSkin -->
+	<s:Button id="openButton"
+		focusEnabled="false"
+		bottom="0"
+		left="0"
+		right="0"
+		top="0"
+		skinClass="spark.skins.spark.DropDownListButtonSkin"/>
+
+	<!--- @copy spark.components.DropDownList#labelDisplay -->
+	<s:Label id="labelDisplay"
+		width="75"
+		bottom="2"
+		left="7"
+		right="30"
+		top="2"
+		verticalAlign="middle"
+		verticalCenter="1"
+		maxDisplayedLines="1"
+		mouseChildren="false"
+		mouseEnabled="false"/>
+
+</s:SparkSkin>
