@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:local="*"
+			   creationComplete="application1_creationCompleteHandler(event)"
+			   addedToStage="application1_addedToStageHandler(event)">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+					
+			private var regions:ArrayCollection = new ArrayCollection();
+			private var param:Object;
+			private static var id_view:String;
+
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{				
+				param = this.parameters;
+				
+				id_view = param.id_view;			
+
+				try {
+					ExternalInterface.addCallback("addRegion", addRegion);
+					ExternalInterface.addCallback("updateRegion", updateRegion);
+					ExternalInterface.addCallback("removeRegion", removeRegion);
+					ExternalInterface.addCallback("updateRegionImage", updateRegionImage);
+					ExternalInterface.addCallback("updateScale", updateScale);
+					ExternalInterface.addCallback("setShade", setShade);
+					ExternalInterface.addCallback("setUnderfill", setUnderfill);
+					ExternalInterface.addCallback("setFills", setFills);
+				}
+				catch(errObject:Error) {
+					trace(errObject.message); 
+				}
+				try {
+					ExternalInterface.call("drawerCreationComplete", id_view);
+				}
+				catch(errObject:Error) {
+					trace(errObject.message); 
+				}
+				
+				
+			}
+			
+			// >> External
+			private function updateRegion(index:String, w:Number = 10, h:Number = 10, name:String = ""):void {
+				var region:Region;
+				for (var i:uint = 0; i < regions.length; i++) {
+					if (regions[i].index == index) {
+						region = regions[i];
+						break;
+					}
+				}
+				if (region != null) {
+					region.update(w, h, name);
+				}
+			}
+			private function updateRegionImage(index:String, url:String):void {
+				var region:Region;
+				for (var i:uint = 0; i < regions.length; i++) {
+					if (regions[i].index == index) {
+						region = regions[i];
+						break;
+					}
+				}
+				if (region != null) {
+					region.loadImage(url);
+				}
+			}
+			private function addRegion(index:String, name:String, w:Number, h:Number, xpos:Number, ypos:Number):void {
+				/*
+				*	patch for change scale when the first region is added 
+				* (spanish comment) el problema es que si la escala inicial fuera 1
+				* cuando se crea la primer region el recuadro de la region puede ser eventualmente muy chico
+				* entonces la solucion es ajustar la escala para que las medidas del recuadro sean el 80%
+				* de las medidas del producto
+				*/
+				if(regions.length==0 && Region.scale==0)
+				{
+					var scaleToFitProductW:Number = (product.width*.5) / w;
+					var scaleToFitProductH:Number = (product.height*.5) / h;
+					updateScale(Math.min(scaleToFitProductW,scaleToFitProductH));
+				}
+				
+				var region:Region = new Region(index, w, h, name, xpos, ypos);
+				region.addEventListener(Event.CHANGE, regionChangeHandler);
+				regions.addItem(region);
+				product.overShade.addElement(region);
+			}
+
+			private function removeRegion(index:String):void {
+				var region:Region;
+				for (var i:uint = 0; i < regions.length; i++) {
+					if (regions[i].index == index) {
+						region = regions[i];
+						break;
+					}
+				}
+				
+				if (region != null) {
+					region.removeEventListener(Event.CHANGE, regionChangeHandler);
+					regions.removeItemAt(i)
+				}
+				product.overShade.removeElement(region);
+			}
+			private function setShade(url:String):void {
+				product.shade_url = url;
+			}
+			private function setUnderfill(url:String):void {
+				product.underFill = url;
+			}
+			private function setFills(url:String):void {
+				//product.colors = url;
+				//product.fills = url;
+			}
+			
+			// << External
+			
+			
+			[Bindable]
+			public function get scale():Number
+			{
+				return Region.scale;
+			}
+			public function set scale(value:Number):void
+			{
+				Region.scale = value;
+				for (var i:uint = 0; i < regions.length; i++) {
+					regions[i].drawRect();
+				}
+			}
+			private function updateScale(value:Number):void
+			{
+				scale = value;
+				try {
+					ExternalInterface.call("onScaleUpdated", id_view, Region.scale);
+				}
+				catch(errObject:Error) {
+					trace(errObject.message); 
+				}
+			}
+			
+			// >> Event Handlers
+			
+			protected function spinnerScale_changeHandler(event:Event = null):void
+			{
+				updateScale(spinnerScale.value);
+			}
+
+			private function regionChangeHandler(event:Event):void {
+				var target:Region = event.target as Region;
+				try {
+					ExternalInterface.call("onRegionPositionUpdated", id_view, target.index, target.xPos, target.yPos);
+				}
+				catch(errObject:Error) {
+					trace(errObject.message); 
+				}
+			}
+			
+			protected function myImage_clickHandler(event:MouseEvent):void
+			{
+				help_content.visible = !help_content.visible;
+			}
+			
+			protected function application1_addedToStageHandler(event:Event):void
+			{
+				trace(event.target.stage.stageWidth);
+				event.target.stage.scaleMode = StageScaleMode.NO_SCALE;
+				event.target.stage.align = StageAlign.TOP_LEFT;
+				trace(event.target.stage.stageWidth);
+				invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer id="border_product" left="0" right="0" top="0" bottom="0" backgroundAlpha="0.25"
+					   backgroundColor="#70B2EE" borderColor="#70B2EE" borderWeight="2"
+					   cornerRadius="10" dropShadowVisible="true" focusColor="#70B2EE">
+		<local:ProductComponent id="product" width="600" height="800"  />
+	</s:BorderContainer>
+	
+	<!--ADJUST SCALE-->
+	<s:Label x="115" y="26" width="78" fontWeight="bold" text="Adjust scale" blendMode="invert"/>
+	<s:Spinner id="spinnerScale" value="{scale}" change="spinnerScale_changeHandler(event)" stepSize=".1" top="20" horizontalCenter="0"/>
+	
+	<!--HELP ICON-->
+	<s:Image id="myImage" right="20" top="20" smooth="true" smoothingQuality="high" click="myImage_clickHandler(event)"
+			 source="@Embed('assets/ico_help.png')" buttonMode="true" />
+	
+	<!--HELP TOOLTIP-->
+	<s:BorderContainer id="help_content" visible="false" right="20" top="40" width="215" height="42"
+					   backgroundColor="#FFF9DD" borderAlpha="1.0" borderColor="#FCD113"
+					   borderVisible="true" borderWeight="2" cornerRadius="5"
+					   dropShadowVisible="true" fontFamily="Arial">
+		<s:Label x="0" y="0" width="100%" height="100%" backgroundAlpha="0.0" color="#915608"
+				 fontFamily="Times New Roman" fontSize="10" fontWeight="normal" paddingBottom="3"
+				 paddingLeft="3" paddingRight="3" paddingTop="3"
+				 text="Use &quot;Adjust scale&quot; for setup scale for all the areas. If you want to change a singular area's width or height please use width and height boxes on the left."
+				 verticalAlign="top">
+		</s:Label>
+	</s:BorderContainer>
+	
+	<s:Label x="22" y="24" width="95" text="scale {spinnerScale.value}"  blendMode="invert"/>
+</s:Application>

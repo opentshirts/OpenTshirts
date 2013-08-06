@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false"
+				contentBackgroundAlpha="0"
+				width="98"
+				height="98"
+				toolTip="{data.file}">
+	<s:BorderContainer width="98" height="98" backgroundAlpha="1" borderWeight="2" cornerRadius="10" >
+		<s:BitmapImage width="100%" height="100%" scaleMode="letterbox" horizontalAlign="center" verticalAlign="middle" source="{data.url}" />
+	</s:BorderContainer>
+</s:ItemRenderer>
