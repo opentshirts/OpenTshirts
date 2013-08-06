@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="300" height="300"
+			   creationComplete="application1_creationCompleteHandler(event)" xmlns:local="*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			private var param:Object;
+			private var clipart_dir:String;
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				clipart.addEventListener(ClipartComponent.CHILD_NOT_MC, onChildNotMC);
+				clipart.addEventListener(ClipartComponent.LAYERS_NUM_CHANGE, onLayersNumChange);
+				
+				param = this.parameters;
+				
+				clipart_dir = param.clipart_dir;
+				
+				if(param.swf_file) {
+					setSource(param.swf_file)
+				}
+				
+				try {
+					ExternalInterface.addCallback("setLayerColor", setLayerColor);
+					ExternalInterface.addCallback("setSource", setSource);
+				}
+				catch(errObject:Error) {
+					trace(errObject.message); 
+				}
+				ExternalInterface.call("onCreationComplete");
+			}
+			
+			private function setLayerColor(layerIndex:uint, layerColor:String):void
+			{
+				if(clipart) {
+					clipart.setLayerColor(layerIndex, layerColor);
+				}
+				
+			}
+			private function setSource(source:String):void
+			{
+				clipart.setSource(clipart_dir + source);
+			}
+
+			private function onChildNotMC(event:Event):void
+			{
+				ExternalInterface.call("onChildNotMC");
+			}
+			private function onLayersNumChange(event:Event):void
+			{
+				ExternalInterface.call("onLayersChange", clipart.getNumLayers());
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer left="10" right="10" top="10" bottom="10" backgroundAlpha="0.25"
+					   backgroundColor="#70B2EE" borderColor="#70B2EE" borderWeight="2"
+					   cornerRadius="10" dropShadowVisible="true" focusColor="#70B2EE">
+		<local:ClipartComponent id="clipart" maxWidth="280" maxHeight="280">
+			
+		</local:ClipartComponent>
+	</s:BorderContainer>
+</s:Application>
