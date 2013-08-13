@@ -387,6 +387,57 @@
 			]]></add>
 		</operation>
 	</file>
+	<file name="catalog/controller/product/category.php">
+		<operation>
+			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
+			<add><![CDATA[
+
+				$this->load->language('opentshirts/product');
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
+
+				$this->load->model('opentshirts/product');
+				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
+				
+				$this->data['products'][] = array(
+					'is_printable'  => $is_printable,
+					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/product/search.php">
+		<operation>
+			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
+			<add><![CDATA[
+
+				$this->load->language('opentshirts/product');
+				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
+				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
+
+				$this->load->model('opentshirts/product');
+				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
+				
+				$this->data['products'][] = array(
+					'is_printable'  => $is_printable,
+					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/account/account.php">
+		<operation>
+			<search position="before"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/account/account.tpl')) {]]></search>
+			<add><![CDATA[
+
+			$this->language->load('opentshirts/account');
+			
+			$this->data['text_my_designs'] = $this->language->get('text_my_designs');
+
+    		$this->data['my_designs'] = $this->url->link('opentshirts/account/mydesigns', '', 'SSL');
+			
+
+			]]></add>
+		</operation>
+	</file>
 	<file name="catalog/controller/checkout/confirm.php">
 		<operation>
 			<search position="after"><![CDATA[$this->session->data['order_id'] = $this->model_checkout_order->addOrder($data);]]></search>

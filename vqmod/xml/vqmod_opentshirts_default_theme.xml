@@ -3,70 +3,6 @@
 	<version>1.0</version>
 	<vqmver>2.3.2</vqmver>
 	<author>joseandriani</author>	
-	<file name="catalog/controller/product/product.php">
-		<operation>
-			<search position="after" offset="4"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/product/product.tpl')) {]]></search>
-			<add><![CDATA[
-
-			$this->load->model('opentshirts/product');
-			$is_printable = $this->model_opentshirts_product->isPrintable($this->request->get['product_id']);
-			if($is_printable) {
-				$this->load->language('opentshirts/product');
-
-				$this->load->model('opentshirts/price_product');
-				$this->load->model('opentshirts/product_color');
-				$this->load->model('opentshirts/product_size');
-				$this->data['price_matrix'] = $this->model_opentshirts_price_product->getPrice($this->request->get['product_id']);
-				$this->data['quantities'] = $this->model_opentshirts_price_product->getQuantities($this->request->get['product_id']);
-				$this->data['color_groups'] = $this->model_opentshirts_product_color->getColorGroups();
-
-				$this->data['sizes_id'] = $this->model_opentshirts_product->getSizes($this->request->get['product_id']);
-				$this->data['all_sizes'] = $this->model_opentshirts_product_size->getSizes();
-
-				$this->data['text_price'] = $this->language->get('text_price');
-				$this->data['text_sizes'] = $this->language->get('text_sizes');
-				$this->data['text_quantities'] = $this->language->get('text_quantities');
-
-				foreach($this->data['price_matrix'] as &$price_array) {
-					foreach($price_array as &$price_value) {
-						$price_value = $this->currency->format($price_value);
-					}
-					unset($price_value);
-				}
-				unset($price_array);				
-
-				$this->data['link_customize'] = $this->url->link('studio/home', 'product_id=' . $this->request->get['product_id']);
-				
-				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
-
-				if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/opentshirts/product.tpl')) {
-					$this->template = $this->config->get('config_template') . '/template/opentshirts/product.tpl';
-				} else {
-					$this->template = 'default/template/opentshirts/product.tpl';
-				}
-			}
-
-			]]></add>
-		</operation>
-	</file>
-	<file name="catalog/controller/product/category.php">
-		<operation>
-			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
-			<add><![CDATA[
-
-				$this->load->language('opentshirts/product');
-				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
-				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
-
-				$this->load->model('opentshirts/product');
-				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
-				
-				$this->data['products'][] = array(
-					'is_printable'  => $is_printable,
-					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
-			]]></add>
-		</operation>
-	</file>
 	<file name="catalog/view/theme/*/template/product/category.tpl">
 		<operation>
 			<search position="replace" offset="12"><![CDATA[<?php if ($product['price']) { ?>]]></search>
@@ -127,24 +63,6 @@
 				]]></add>
 		</operation>
 	</file>
-	<file name="catalog/controller/product/search.php">
-		<operation>
-			<search position="replace" ><![CDATA[$this->data['products'][] = array(]]></search>
-			<add><![CDATA[
-
-				$this->load->language('opentshirts/product');
-				$this->data['text_link_customize'] = $this->language->get('text_link_customize');
-				$this->data['text_starting_at'] = $this->language->get('text_starting_at');
-
-				$this->load->model('opentshirts/product');
-				$is_printable = $this->model_opentshirts_product->isPrintable($result['product_id']);
-				
-				$this->data['products'][] = array(
-					'is_printable'  => $is_printable,
-					'link_customize'  => $this->url->link('studio/home', 'product_id=' . $result['product_id']),
-			]]></add>
-		</operation>
-	</file>
 	<file name="catalog/view/theme/*/template/product/search.tpl">
 		<operation>
 			<search position="replace" offset="12"><![CDATA[<?php if ($product['price']) { ?>]]></search>
@@ -203,21 +121,6 @@
 			}
 
 				]]></add>
-		</operation>
-	</file>
-	<file name="catalog/controller/account/account.php">
-		<operation>
-			<search position="before"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/account/account.tpl')) {]]></search>
-			<add><![CDATA[
-
-			$this->language->load('opentshirts/account');
-			
-			$this->data['text_my_designs'] = $this->language->get('text_my_designs');
-
-    		$this->data['my_designs'] = $this->url->link('opentshirts/account/mydesigns', '', 'SSL');
-			
-
-			]]></add>
 		</operation>
 	</file>
 	<file name="catalog/view/theme/*/template/account/account.tpl">
