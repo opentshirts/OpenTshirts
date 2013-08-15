@@ -3,11 +3,23 @@ class ControllerXmlXml extends Controller {
 
 	public function index() {
 
-		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
-			$server = HTTPS_SERVER;
+		if (isset($_SERVER['HTTPS']) && (($_SERVER['HTTPS'] == 'on') || ($_SERVER['HTTPS'] == '1'))) {
+			$store_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "store WHERE REPLACE(`ssl`, 'www.', '') = '" . $this->db->escape('https://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\') . '/') . "'");
+			if ($store_query->num_rows) {
+				$server = $store_query->row['ssl'];
+			} else {
+				$server = HTTPS_SERVER;
+			}
+
 		} else {
-			$server = HTTP_SERVER;
+			$store_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "store WHERE REPLACE(`url`, 'www.', '') = '" . $this->db->escape('http://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\') . '/') . "'");
+			if ($store_query->num_rows) {
+				$server = $store_query->row['url'];
+			} else {
+				$server = HTTP_SERVER;
+			}
 		}
+
 
 		if (!isset($this->session->data['studio_data'])) {
       		$this->session->data['studio_data'] = array();
