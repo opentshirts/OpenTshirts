@@ -1,3 +1,11 @@
+V1.2.1
+
+08-14-2013 - fix for multi store issue
+08-14-2013 - removed cache load from product model
+08-13-2013 - fix for vqmod duplicated replace
+08-01-2013 - Fixed issues with videotutorial popup
+07-31-2013 - Fixed compatibility issues with opencart 1.5.6
+
 V1.2.0
 
 07-26-2013 - Fixed whitespace issue in upgrade.sql
