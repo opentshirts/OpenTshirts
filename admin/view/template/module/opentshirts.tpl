@@ -88,7 +88,7 @@
           <div id="tab-about" align="center">
             <table style=" border: solid 1px #5CC4BA; padding: 20px; margin: 20px; text-align: center;">
               <tr><td><img src="../image/about_header.png"></td></tr>
-              <tr><td><p style="color: #0094BA; padding: 20px; margin: 20px; ">Opentshirts V1.2.2</p>
+              <tr><td><p style="color: #0094BA; padding: 20px; margin: 20px; ">Opentshirts V1.2.3</p>
                 <p><a href="http://www.opentshirts.com" target="_blank">http://www.opentshirts.com</a></p>
             </td></tr>
             </table>
