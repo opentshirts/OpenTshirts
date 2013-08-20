@@ -4,8 +4,10 @@
 	display:none;
 	margin: 2px;
 	bottom: 0;
-	left: 300px;
-	right: 300px;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+	text-align: center;
 }
 </style>
 <style type="text/css">
@@ -31,4 +33,4 @@ $(function() {
 	});
 });
 </script> 
-<div id="product_color_container"><?php echo $color_list; ?></div>
+<div id="product_color_container" align="center"><?php echo $color_list; ?></div>
