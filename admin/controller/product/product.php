@@ -41,7 +41,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if (isset($this->request->get['filter_printable'])) {
-				$url .= '$filter_printable=' . $this->request->get['filter_printable'];
+				$url .= '&filter_printable=' . $this->request->get['filter_printable'];
 			}
 
 			if (isset($this->request->get['sort'])) {
@@ -97,7 +97,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if (isset($this->request->get['filter_printable'])) {
-				$url .= '$filter_printable=' . $this->request->get['filter_printable'];
+				$url .= '&filter_printable=' . $this->request->get['filter_printable'];
 			}
 
 			if (isset($this->request->get['sort'])) {
@@ -152,7 +152,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if (isset($this->request->get['filter_printable'])) {
-				$url .= '$filter_printable=' . $this->request->get['filter_printable'];
+				$url .= '&filter_printable=' . $this->request->get['filter_printable'];
 			}
 												
 			if (isset($this->request->get['filter_keyword'])) {
@@ -208,7 +208,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			if (isset($this->request->get['filter_printable'])) {
-				$url .= '$filter_printable=' . $this->request->get['filter_printable'];
+				$url .= '&filter_printable=' . $this->request->get['filter_printable'];
 			}
 
 			if (isset($this->request->get['sort'])) {
