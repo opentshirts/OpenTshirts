@@ -358,11 +358,16 @@
 
 				$this->load->model('opentshirts/price_product');
 				$this->load->model('opentshirts/product_color');
+				$this->load->model('opentshirts/product_size');
 				$this->data['price_matrix'] = $this->model_opentshirts_price_product->getPrice($this->request->get['product_id']);
 				$this->data['quantities'] = $this->model_opentshirts_price_product->getQuantities($this->request->get['product_id']);
 				$this->data['color_groups'] = $this->model_opentshirts_product_color->getColorGroups();
 
+				$this->data['sizes_id'] = $this->model_opentshirts_product->getSizes($this->request->get['product_id']);
+				$this->data['all_sizes'] = $this->model_opentshirts_product_size->getSizes();
+
 				$this->data['text_price'] = $this->language->get('text_price');
+				$this->data['text_sizes'] = $this->language->get('text_sizes');
 				$this->data['text_quantities'] = $this->language->get('text_quantities');
 
 				foreach($this->data['price_matrix'] as &$price_array) {
