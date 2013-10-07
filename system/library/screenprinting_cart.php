@@ -139,6 +139,18 @@ class ScreenprintingCart {
 
 			}
 
+			$recurring = false;
+            $recurring_frequency = 0;
+            $recurring_price = 0;
+            $recurring_cycle = 0;
+            $recurring_duration = 0;
+            $recurring_trial_status = 0;
+            $recurring_trial_price = 0;
+            $recurring_trial_cycle = 0;
+            $recurring_trial_duration = 0;
+            $recurring_trial_frequency = 0;
+            $profile_name = '';
+            $profile_id = 0;
 
 			$this->data[$screen_charge_key] = array(
 				'key'             => $screen_charge_key,
@@ -164,7 +176,19 @@ class ScreenprintingCart {
 				'length'          => 0,
 				'width'           => 0,
 				'height'          => 0,
-				'length_class_id' => $this->config->get('config_length_class_id')				
+				'length_class_id' => $this->config->get('config_length_class_id'),
+				'profile_id'                => $profile_id,
+                'profile_name'              => $profile_name,
+                'recurring'                 => $recurring,
+                'recurring_frequency'       => $recurring_frequency,
+                'recurring_price'           => $recurring_price,
+                'recurring_cycle'           => $recurring_cycle,
+                'recurring_duration'        => $recurring_duration,
+                'recurring_trial'           => $recurring_trial_status,
+                'recurring_trial_frequency' => $recurring_trial_frequency,
+                'recurring_trial_price'     => $recurring_trial_price,
+                'recurring_trial_cycle'     => $recurring_trial_cycle,
+                'recurring_trial_duration'  => $recurring_trial_duration		
 			);
 		}
 		return $return;

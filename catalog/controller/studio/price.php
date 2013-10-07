@@ -265,6 +265,8 @@ class ControllerStudioPrice extends Controller {
 			$this->error['warning'] = $this->language->get('error_printing_empty');
 		} elseif (!is_array($this->session->data['studio_data'][$this->request->post['price_studio_id']]["quantity_s_c"])) {
 			$this->error['warning'] = $this->language->get('error_matrix');
+		} elseif (empty($this->session->data['studio_data'][$this->request->post['price_studio_id']]["printing_method"])) {
+			$this->error['warning'] = $this->language->get('error_printing_method');
 		} 
 
 		if (!$this->error) {
