@@ -28,7 +28,8 @@ class ModelProductSize extends Model {
 		$sql .= " id_product_size = '" . $id_product_size . "',";
 		$sql .= " description = '" . $this->db->escape($data['description']) . "',";
 		$sql .= " initials = '" . $this->db->escape($data['initials']) . "',";
-		$sql .= " apply_additional_cost = '" . $this->db->escape($data['apply_additional_cost']) . "' ";
+		$sql .= " apply_additional_cost = '" . $this->db->escape($data['apply_additional_cost']) . "', ";
+		$sql .= " option_value_id = '" . $option_value_id . "' ";
 
 		$this->db->query($sql);
 			
