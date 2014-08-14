@@ -45,7 +45,7 @@ class ModelProductView extends Model {
 			$data['asc_desc'] = ' ASC ';
 		}
 		
-		$sql .= $tables.$condition." ORDER BY ".mysql_real_escape_string($data['order'])." ".mysql_real_escape_string($data['asc_desc']);
+		$sql .= $tables.$condition." ORDER BY ".$this->db->escape($data['order'])." ".$this->db->escape($data['asc_desc']);
 				
 		return $sql;
 	}
