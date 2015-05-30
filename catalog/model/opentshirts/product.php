@@ -177,7 +177,7 @@ class ModelOpentshirtsProduct extends Model {
 		}
 
 		if (!empty($data['filter_printable'])) {
-			$sql .= " AND p.product_id = p2pp.product_id ";
+			$sql .= " AND p.product_id = p2pp.product_id AND p2pp.printable_status = 1 ";
 		}
 		
 		$sql .= " GROUP BY p.product_id";
@@ -361,7 +361,7 @@ class ModelOpentshirtsProduct extends Model {
 		}
 
 		if (!empty($data['filter_printable'])) {
-			$sql .= " AND p.product_id = p2pp.product_id ";
+			$sql .= " AND p.product_id = p2pp.product_id AND p2pp.printable_status = 1 ";
 		}
 		
 		$query = $this->db->query($sql);
@@ -379,7 +379,7 @@ class ModelOpentshirtsProduct extends Model {
 		
 		$sql = "SELECT COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) LEFT JOIN " . DB_PREFIX . "printable_product p2pp ON (p.product_id = p2pp.product_id)";
 					
-		$sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND p.product_id = p2pp.product_id AND p.product_id = '" . $product_id . "'";
+		$sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' AND p.product_id = p2pp.product_id AND p2pp.printable_status = 1 AND p.product_id = '" . $product_id . "'";
 
 		$query = $this->db->query($sql);
 		
