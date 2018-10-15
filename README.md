@@ -2,6 +2,8 @@ Opentshirts
 ===========
 
 Opentshirts is the free open source t-shirt design module for Opencart eCommerce.
+This is the legacy (Adobe Flash) version of opentshirts works on opencart 1.5 for evaluation porpuse on local envirnoment,
+for production use and html 5 online designer compatibel with OpenCart 3.X visit https://wwww.opentshirts.com
 
 --------------------------------------------------------------------------------
 
