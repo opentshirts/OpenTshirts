@@ -53,3 +53,9 @@ Upgrade Instructions
 2- Log in into your opencart admin, go to System-Users-User Groups, select Top Administrator, Edit, then select all for access and modify permission and save.
 
 3- Go to Extensions-Modules, Find Opentshirts, click edit, then go to upgrade tab and click upgrade button.
+
+License
+Copyright © OpenTshirts
+For use of OpenTshirts scripts in commercial (for-profit) environments or non-free applications, please contact us via email at contact@opentshirts.com.
+If you: 1) redistribute, 2) incorporate any of these scripts into other free applications or 3) reprogram them in another scripting language, then you must contact us for permission, especially if the result might be used in a commercial or for-profit environment.
+Usage, whether stated or not in the script, is restricted to the above licensing arrangements.
