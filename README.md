@@ -2,12 +2,12 @@ Opentshirts
 ===========
 
 Opentshirts is the free open source t-shirt design module for Opencart eCommerce.
-This is the legacy (Adobe Flash) version of opentshirts works on opencart 1.5 for evaluation porpuse on local envirnoment,
-for production use and html 5 online designer compatibel with OpenCart 3.X visit https://wwww.opentshirts.com
+This is the legacy (Adobe Flash) version of opentshirts works on opencart 1.5 for evaluation purpose on local envirnoment,
+for production use and html 5 online designer compatible with OpenCart 3.X visit https://wwww.opentshirts.com
 
 --------------------------------------------------------------------------------
 
-If you are a develeper and want to contribute please follow the branchig model describer here
+If you are a develeper and want to contribute please follow the branching model described here
 http://nvie.com/posts/a-successful-git-branching-model/
 
 --------------------------------------------------------------------------------
@@ -17,7 +17,7 @@ http://semver.org/
 
 --------------------------------------------------------------------------------
 
-In order to download lastest releases please go to 
+In order to download latest releases please go to 
 
 http://github.com/opentshirts/opentshirts/releases
 
@@ -41,9 +41,9 @@ Steps
 4- Go to Extensions-Opentshirts-Printing Method and enable your preferred printing methods
 
 5- Go to Extensions-Opentshirts-Install Packs and upload the Font Pack
-Optionaly you can also upload the art sample pack in the same page.
+Optionally you can also upload the art sample pack in the same page.
 
-6- Optionaly you can go to Extensions-Product Import/Export-Import and upload the default product packs (unzip before upload). If you find some trouble uploading the files check your values for Upload Max Filesize, Post Max size, Memory Limit, and Max Execution Time. They must be bigger the each zip file you upload.
+6- Optionally you can go to Extensions-Product Import/Export-Import and upload the default product packs (unzip before upload). If you find some trouble uploading the files check your values for Upload Max Filesize, Post Max size, Memory Limit, and Max Execution Time. They must be bigger the each zip file you upload.
 If you dont see new categories in admin category list, click the repair button.
 
 Upgrade Instructions
