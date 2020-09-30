@@ -1,4 +1,4 @@
-Opentshirts
+Opentshirts : Free for all
 ===========
 
 Opentshirts is the free open source t-shirt design module for Opencart eCommerce.
